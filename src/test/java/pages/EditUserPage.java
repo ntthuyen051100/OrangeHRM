@@ -2,6 +2,7 @@ package pages;
 
 import base.BasePage;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 
 public class EditUserPage extends BasePage {
@@ -24,10 +25,14 @@ public class EditUserPage extends BasePage {
     public boolean isFormDisplayed (){
         return isDisplayed(editForm);
     }
-    public void setUsername (String editName){
+    public void setUsername (String editName) throws InterruptedException {
         isDisplayed(username);
         isNotDisplayed(loadingOverlay);
+/*
         clear(username);
+Cài đặt Autocomplete: Nếu ô nhập có thuộc tính autocomplete được bật, hàm clear() có thể không hoạt động như mong đợi.
+ you can try an alternative text clearance by sending 'Ctrl+A+Delete' key combination using sendKeys method of the element's object:*/
+        driver.findElement(username).sendKeys(Keys.chord(Keys.CONTROL,"a", Keys.DELETE));
         sendKeys(username, editName);
     }
     public void submitChanges (){

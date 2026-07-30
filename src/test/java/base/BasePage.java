@@ -1,14 +1,13 @@
 package base;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
 import java.time.Duration;
+import java.util.List;
 
 public class BasePage {
     protected WebDriver driver;
@@ -76,4 +75,21 @@ public class BasePage {
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].click();",driver.findElement(locator));
     }
+    //Handle Data Table
+    public void checkContainsSearchTableByColumn(int column, String value) throws InterruptedException {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        List<WebElement> totalRows = driver.findElements(By.xpath("//div[@id='example_wrapper']//tbody/tr"));
+        Thread.sleep(1);
+        System.out.println("Số kết quả cho từ khóa (" + value + "): " + totalRows.size());
+
+        for (int i = 1; i <= totalRows.size(); i++) {
+            boolean res = false;
+            WebElement title = driver.findElement(By.xpath("//div[@id='example_wrapper']//tbody/tr[" + i + "]/td[" + column + "]"));
+            // js.executeScript("arguments[0].scrollIntoView(true);", title);
+            res = title.getText().toUpperCase().contains(value.toUpperCase());
+            System.out.println("Dòng thứ " + i + ": " + res + " - " + title.getText());
+            Assert.assertTrue(res, "Dòng thứ " + i + " (" + title.getText() + ")" + " không chứa giá trị " + value);
+        }
+    }
+
 }

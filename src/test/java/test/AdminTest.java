@@ -153,15 +153,16 @@ public class AdminTest extends BaseTest{
 //ko search mà điều khiển màn hình tới username tương ứng trong list. Lấy thông tin từ row ra xem
 //có hiển thị đúng không.
     public void TC08_CheckSystemUser_EditUserInfo() throws InterruptedException {
-        String username = "abcde9t";
+        String username = "FML20009800";
         adminPage.clickEditButton(username);
         Assert.assertTrue(editUserPage.isTitleDisplayed(),"Navigate to the wrong site");
         System.out.println("Navigate to edit user page");
         Assert.assertTrue(editUserPage.isFormDisplayed(),"Edit form is not displayed");
         System.out.println("Edit form is displayed");
-        String newUsername = "TestAuto2026";
+        String newUsername = "TestAuto202178";
         editUserPage.setUsername(newUsername);
         editUserPage.submitChanges();
+        Thread.sleep(5000);
         Assert.assertTrue(adminPage.isChangedUsernameDisplayed(newUsername));
         System.out.println("Done");
     }

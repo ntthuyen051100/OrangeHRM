@@ -29,6 +29,7 @@ public class AdminPage extends BasePage {
     By tableSearchResult = By.cssSelector("div[class='oxd-table-body']");
     By rows = By.xpath("//div[@class='oxd-table-card']/div[@role='row']");
 //  By rows1 = By.cssSelector("div[class='oxd-table-card'] > div");
+    By btnNextPage = By.xpath("//button[@class='oxd-pagination-page-item oxd-pagination-page-item--previous-next']/i[@class='oxd-icon bi-chevron-right']");
 
     By DdUserRole = By.cssSelector("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > form:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1)");
     By optSelect = By.xpath("//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div[1]/div[2]/form/div[1]/div/div[2]/div/div[2]/div/div[2]/div[1]");
@@ -294,10 +295,12 @@ public class AdminPage extends BasePage {
 //               WebElement btnEdit = row.findElement(By.xpath(".//button[@type='button'][2]"));
 //                wait.until(ExpectedConditions.elementToBeClickable(editButton)).click();
     }
-    public boolean isChangedUsernameDisplayed (String editUserName){
+    public boolean isChangedUsernameDisplayedInCurrentPage (String editUserName){
+        //Đây mới chỉ quét kết quả trên trang hiện tại thôi, còn lỡ có nhiều trang thì phải tìm cách khác
         isDisplayed(rows);
         System.out.println("Navigate back to User System page");
         moveToElement(rows);
+        // Đây là cho 1 trang hiện tại
         List<WebElement> rowList = driver.findElements(rows);
         for (WebElement row : rowList) {
             String username = row.findElement(By.xpath(".//div[@role='cell'][2]/div")).getText();
@@ -309,6 +312,35 @@ public class AdminPage extends BasePage {
         }
         System.out.println("Username is not changed");
         return false;
+    }
+    public boolean isChangedUsernameDisplayed(String usernameExpected) {
+        while (true) {
+            // 1. Lấy tất cả row của page hiện tại
+            List<WebElement> rowList = driver.findElements(rows);
+            // 2. Quét từng row ở trang hiện tại
+            for (WebElement row : rowList) {
+                String username = row.findElement(By.xpath(".//div[@role='cell'][2]/div")).getText();
+                System.out.println("Checking username: " + username);
+                if (username.equals(usernameExpected)) {
+                    System.out.println("Username is found: " + usernameExpected);
+                    return true;
+                }
+            }
+            // 3. Không tìm thấy ở page hiện tại
+            // Kiểm tra còn trang tiếp theo không
+            moveToPageBottom();
+            if (isDisplayed(btnNextPage)) {
+                WebElement nextButton = driver.findElement(btnNextPage);
+                if (!nextButton.isEnabled()) {
+                    System.out.println("Username is not found in all pages");
+                    return false;
+                }
+                // 4. Sang page tiếp theo
+                nextButton.click();
+                // 5. Chờ table load lại
+                wait.until(ExpectedConditions.visibilityOfElementLocated(rows));
+            }
+        }
     }
 }
 
