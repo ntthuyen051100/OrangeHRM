@@ -18,7 +18,7 @@ public class BasePage {
     // Khởi tạo Wait một lần duy nhất tại Constructor
     public BasePage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         this.action = new Actions(driver);
     }
 // class để rút gọn những action của driver
@@ -60,16 +60,21 @@ public class BasePage {
     public boolean isSelected (By locator){
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).isSelected();
     }
-
     public void enter() {
         action.sendKeys(Keys.ENTER).build().perform();
     }
     public void moveToElement(By locator){
+        isDisplayed(locator);
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].scrollIntoView({block:'center'});",driver.findElement(locator));
     }
     public void moveToPageBottom(){
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollTo(0,document.body.scrollHeight)");
+    }
+    public void clickByJs(By locator){
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].click();",driver.findElement(locator));
+
     }
 }

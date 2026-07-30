@@ -23,7 +23,7 @@ public class AdminPage extends BasePage {
 
     By usernameSearchBox = By.cssSelector("div[class='oxd-input-group oxd-input-field-bottom-space'] div input[class='oxd-input oxd-input--active']");
     //Cả 2 cách dưới đều tìm locator của bảng kết quả tìm kiếm. Tuy nhiên tableSearchResults là tìm nguyên
-    //cái bảng, rows là tìm TẤT CẢ rows trong bảng. Nên nếu khi quét để xemn search có trong kết quả không
+    //cái bảng, là container, rows là tìm TẤT CẢ rows trong bảng. Nên nếu khi quét để xemn search có trong kết quả không
     //thì việc duyệt theo từng row sẽ ok hơn.
     By tableSearchResult = By.cssSelector("div[class='oxd-table-body']");
     By rows = By.xpath("//div[@class='oxd-table-card']/div[@role='row']");
@@ -42,6 +42,11 @@ public class AdminPage extends BasePage {
     // nên ta có lệnh /span là đi tiếp xuống chỗ tag con là span.
 
     By btnDeleteSelected = By.cssSelector("button[class='oxd-button oxd-button--medium oxd-button--label-danger orangehrm-horizontal-margin']");
+    By popupDelete = By.cssSelector("div[role='document']");
+    By btnClosePopup = By.xpath("//button[normalize-space()='×']");
+    By btnCancelDelete = By.cssSelector("button[class='oxd-button oxd-button--medium oxd-button--ghost orangehrm-button-margin']");
+    By btnYesDelete = By.cssSelector("button[class='oxd-button oxd-button--medium oxd-button--label-danger orangehrm-button-margin']");
+    By msgDeleteSuccess = By.id("oxd-toaster_1");
 
     By tabJob = By.cssSelector("li[class='--active oxd-topbar-body-nav-tab --parent --visited'] span[class='oxd-topbar-body-nav-tab-item']");
     By btnJobTitle = By.xpath("//a[normalize-space()='Job Titles']");
@@ -81,27 +86,32 @@ public class AdminPage extends BasePage {
     //User screen
 /*
     public void navigateUserScreen (){
-*/
-/*        if(isNotDisplayed(tabUserMng))
-            click(tabMore);*//*
-
+//       if(isNotDisplayed(tabUserMng))
+//            click(tabMore);
         click(tabUserMng);
         click(btnUsers);
     }
 */
+    //Search result
+    public boolean isSearchResultDisplayed(){
+        isDisplayed(rows);
+        moveToElement(rows);
+        return isDisplayed(rows);
+    }
+    public boolean isSearchResultNotDisplayed(){
+        return isNotDisplayed(rows);
+    }
+    public void chooseOneFromSearchList (){
+        isDisplayed(rows);
+        moveToElement(rows);
+    }
 
-    //Search
+    //User name Search
     public void searchUsername (String keyword){
         isDisplayed(tabUserMng);
         sendKeys(usernameSearchBox, keyword);
         enter();
     }
-
-    public boolean searchResultIsDisplayed(){
-        moveToPageBottom();
-        return isDisplayed(tableSearchResult);
-    }
-
     public List<String> getUsernameSearchList (String keyword)  {
 /*      JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollTo(0,document.body.scrollHeight)");*/
@@ -116,6 +126,7 @@ public class AdminPage extends BasePage {
         }
         return usnList;
     }
+
 /*    Cách phức tạp hơn, tạo thành 1 object rồi so sánh theo object
 public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
         List<UserInfo> usersList = new ArrayList<>();
@@ -168,7 +179,7 @@ public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
         click(optName);
         click(btnSearch);
         moveToPageBottom();
-        isDisplayed(tableSearchResult);
+        isDisplayed(rows);
         return keyword2;
     }
     public List<String> getNameSearchResult () throws InterruptedException {
@@ -190,7 +201,7 @@ public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
     }
     public boolean searchResultIsNotDisplayed(){
         moveToPageBottom();
-        return isNotDisplayed(tableSearchResult);
+        return isNotDisplayed(rows);
     }
 
     //Delete selected
@@ -201,11 +212,12 @@ public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
             String username = row.findElement(By.xpath(".//div[@role='cell'][2]/div")).getText();
             System.out.println("Username chạy từ" +username);
             if (username.equals(usernameExpected)) {
+                System.out.println("Found user with exact username");
                WebElement checkbox = row.findElement(By.cssSelector("div[class='oxd-table-card-cell-checkbox']"));
     //            WebElement checkbox = row.findElement(By.cssSelector("input[type='checkbox']"));
                 if (!checkbox.isSelected()) {
                     checkbox.click();
-                    System.out.println("xác nhận đến ước nay chua");
+                    System.out.println("Checked the username's checkbox");
                 }
                 break;
             }
@@ -226,6 +238,44 @@ public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
         }
         return false;
     }
+    public void clickDeleteSelectedButton (){
+        moveToElement(btnDeleteSelected);
+        click(btnDeleteSelected);
+    }
+    public boolean isPopupDeleteDisplayed(){
+        return isDisplayed(popupDelete);
+    }
+    public boolean isPopupDeleteClosed(){
+        return isNotDisplayed(popupDelete);
+    }
+    public void closePopupDelete (){
+        click(btnClosePopup);
+    }
+    public void notDelete (){
+        click(btnCancelDelete);
+    }
+    public void deleteSelected (){
+        click(btnYesDelete);
+    }
+    public boolean isDeleteSuccessMessageDisplayed (){
+        return isDisplayed(msgDeleteSuccess);
+    }
+    public boolean checkUserAfterDelete (String deletedUsername) {
+        moveToElement(rows);
+        List<WebElement> rowList = driver.findElements(rows);
+        for (WebElement row : rowList) {
+            String username = row.findElement(By.xpath(".//div[@role='cell'][2]/div")).getText();
+            System.out.println("Verify deleted username flow chạy từ" +username);
+            if (username.equals(deletedUsername)) {
+                System.out.println("Vẫn tồn tại username bị xóa");
+                return false; }
+            }
+        System.out.println("Username đã được xóa thành công");
+        return true;
+    }
+
+    //Edit Seletecd User Info
+
 }
 /*    public void navigateJobTitleScreen (){
         if(isNotDisplayed(tabJob)){

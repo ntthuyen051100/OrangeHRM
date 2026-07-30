@@ -18,7 +18,7 @@ public class AdminTest extends BaseTest{
     CommonPage commonPage;
 
     @BeforeMethod
-    public void LoginSuccess() {
+    public void LoginSuccess() throws InterruptedException {
         softAssert = new SoftAssert();
         adminPage = new AdminPage(driver);
         commonPage = new CommonPage(driver);
@@ -26,9 +26,9 @@ public class AdminTest extends BaseTest{
         loginPage.login("Admin", "admin123");
         commonPage.clickAdmin();
     }
+
     @Test
-    public void TC01_NavigateToUsersPage (){
-//        adminPage.navigateUserScreen();
+    public void TC01_NavigateToUsersPage () {
         Assert.assertTrue(commonPage.getTitle().contains("User"), "Navigate to wrong site");
          System.out.println("Navigate to Users site");
     }
@@ -39,7 +39,7 @@ public class AdminTest extends BaseTest{
         String keyword = "Admin";
         //Nhập keyword rồi check xem có hiện kết quả search không
         adminPage.searchUsername(keyword);
-        Assert.assertTrue(adminPage.searchResultIsDisplayed());
+        Assert.assertTrue(adminPage.isSearchResultDisplayed());
         //Check xem trong kết quả có trùng với keyword
         List<String> users = adminPage.getUsernameSearchList(keyword);
         for(String user : users){
@@ -48,11 +48,12 @@ public class AdminTest extends BaseTest{
         }
         softAssert.assertAll();
     }
+
     @Test
     public void TC03_CheckSystemUsers_UserRole_Valid() throws InterruptedException {
 //        adminPage.navigateUserScreen();
         adminPage.clickUserRoleAdmin();
-        Assert.assertTrue(adminPage.searchResultIsDisplayed());
+        Assert.assertTrue(adminPage.isSearchResultDisplayed());
         //Check xem trong kết quả có trùng với keyword
         List<String> roles = adminPage.getRoleSearchResult();
         int quan = 0;
@@ -64,6 +65,7 @@ public class AdminTest extends BaseTest{
         System.out.println("Số kết quả tìm kiếm hiện có là " + quan +"và kết quả là"+roles);
         softAssert.assertAll();
     }
+
     @Test
     public void TC04_CheckSystemUsers_EmployeeName_Valid() throws InterruptedException {
 //        adminPage.navigateUserScreen();
@@ -88,28 +90,73 @@ public class AdminTest extends BaseTest{
         System.out.println("Số kết quả tìm kiếm đề xuất là cụ thể là \n" + searchNameList);
         softAssert.assertAll();
     }
+
     @Test
     public void TC05_CheckSystemUsers_ButtonResetOK() throws InterruptedException {
         String keyword = "S";
         adminPage.typeName(keyword);
         adminPage.searchName();
-        adminPage.searchResultIsDisplayed();
-        Assert.assertTrue(adminPage.searchResultIsDisplayed(),"Kết quả ko được hiển thị");
+        adminPage.isSearchResultDisplayed();
+        Assert.assertTrue(adminPage.isSearchResultDisplayed(),"Kết quả ko được hiển thị");
         adminPage.clearSearchResult();
-        adminPage.searchResultIsNotDisplayed();
-        Assert.assertTrue(adminPage.searchResultIsNotDisplayed(),"Kết quả vẫn hiển thị");
+        adminPage.isSearchResultNotDisplayed();
+        Assert.assertTrue(adminPage.isSearchResultNotDisplayed(),"Kết quả vẫn hiển thị");
         System.out.println("Kết quả được xóa thành công");
-//Trong thực tế thì khoảng thời gian searchResult biến mất chưa tới 1s nên lúc này chạy đúng.
-//Còn nếu cho thêm thời gian thì search result table đã hiển thị lại rồi
+//Trong thực tế thì khoảng thời gian searchResult biến mất chưa tới 1s nên lúc này khó xác định được liền
     }
+
     @Test
-    public void TC06_CheckSystemUsers_ButtonDeleteSelected() throws InterruptedException {
-//Ý tưởng: khi result table hiển thị full, chọn 1 row có username trùng với keyword nhập vào, click ô select
+    //Ý tưởng: khi result table hiển thị full, chọn 1 row có username trùng với keyword nhập vào, click ô select
 //xóa ô đã chọn, rồi check xem username đó còn hiển thị nữa không, ko là OK
-        adminPage.searchResultIsDisplayed();
-        String userName = "tvmuSjqI";
+    public void TC06_CheckSystemUsers_ButtonDeleteSelected() throws InterruptedException {
+        adminPage.isSearchResultDisplayed();
+        String userName = "FMLName";
         adminPage.checkUser(userName);
         Assert.assertTrue(adminPage.isUserChecked(userName), "Username chưa được chọn");
         System.out.println("Username tương ứng đã được chọn");
+    }
+
+    @Test
+    public void TC07_CheckSystemUser_DeleteSelectedUser() {
+        adminPage.isSearchResultDisplayed();
+        String userName = "FMLName";
+        adminPage.checkUser(userName);
+        adminPage.clickDeleteSelectedButton();
+        Assert.assertTrue(adminPage.isPopupDeleteDisplayed(), "PopUp is not displayed");
+        System.out.println("Delete Popup is displayed");
+        adminPage.closePopupDelete();
+        Assert.assertTrue(adminPage.isPopupDeleteClosed(), "PopUp is displayed");
+        System.out.println("(Close button) Delete Popup is closed");
+
+        adminPage.clickDeleteSelectedButton();
+        adminPage.notDelete();
+        Assert.assertTrue(adminPage.isPopupDeleteClosed(), "PopUp is displayed");
+        System.out.println("(No delete button) Delete Popup is closed");
+
+        adminPage.clickDeleteSelectedButton();
+        adminPage.deleteSelected();
+        Assert.assertTrue(adminPage.isPopupDeleteClosed(), "PopUp is displayed");
+        System.out.println("(Yes, delete button) Delete Popup is closed");
+        Assert.assertTrue(adminPage.isDeleteSuccessMessageDisplayed(),"Delete Message is not displayed");
+        System.out.println("Delete success message is displayed");
+        adminPage.isSearchResultDisplayed();
+        adminPage.checkUserAfterDelete(userName);
+        Assert.assertTrue(adminPage.checkUserAfterDelete(userName));
+        System.out.println("Selected user is deleted");
+    }
+
+    @Test
+    //Ý tưởng: search username, chọn edit thông tin username. Sau đó quay lại màn hình SystemUser
+//ko search mà điều khiển màn hình tới username tương ứng trong list. Lấy thông tin từ row ra xem
+//có hiển thị đúng không.
+    public void TC08_CheckSystemUser_EditUserInfo(){
+        String username = "";
+        adminPage.checkUser(username);
+        Assert.assertTrue(adminPage.isSearchResultDisplayed());
+        //Check xem trong kết quả có trùng với keyword
+        List<String> users = adminPage.getUsernameSearchList(username);
+        for(String user : users){
+            System.out.println("Kết quả tìm kiếm hiện có là " +user);
+        }
     }
 }

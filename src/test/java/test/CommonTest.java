@@ -151,7 +151,7 @@ Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth
         System.out.println("With keyword is " +keyword+". The search keyword have 0 matching result.");
     }
     @Test
-    public void TC04_SideMenuElementNavigateRight(){
+    public void TC04_SideMenuElementNavigateRight() throws InterruptedException {
         commonPage.clickAdmin();
         softAssert.assertTrue(commonPage.getTitle().contains("Admin"),"Navigate to the wrong page");
         commonPage.clickPim();

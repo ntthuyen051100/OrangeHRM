@@ -25,7 +25,7 @@ public class CommonPage extends BasePage {
     //Side menu
     By logo = By.cssSelector("img[alt='client brand banner']");
     By btnArrow = By.cssSelector("button[role='none']");
-    By admin = By.cssSelector("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > aside:nth-child(1) > nav:nth-child(1) > div:nth-child(2) > ul:nth-child(2) > li:nth-child(1) > a:nth-child(1)");
+    By admin = By.xpath("//a[@class='oxd-main-menu-item' and @href='/web/index.php/admin/viewAdminModule']");
     By pim = By.cssSelector("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > aside:nth-child(1) > nav:nth-child(1) > div:nth-child(2) > ul:nth-child(2) > li:nth-child(2) > a:nth-child(1)");
     By leave = By.cssSelector("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > aside:nth-child(1) > nav:nth-child(1) > div:nth-child(2) > ul:nth-child(2) > li:nth-child(3) > a:nth-child(1)");
     By time = By.cssSelector("body > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > aside:nth-child(1) > nav:nth-child(1) > div:nth-child(2) > ul:nth-child(2) > li:nth-child(4) > a:nth-child(1)");
@@ -92,7 +92,8 @@ public class CommonPage extends BasePage {
     public void clickArrow(){
         click(btnArrow);
     }
-    public void clickAdmin(){
+    public void clickAdmin() {
+        isDisplayed(admin);
         click(admin);
     }
     public void clickPim(){
