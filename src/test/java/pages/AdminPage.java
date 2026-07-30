@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +117,7 @@ public class AdminPage extends BasePage {
 /*      JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollTo(0,document.body.scrollHeight)");*/
         isDisplayed(By.xpath("(//div[contains(text(),'"+keyword+"')])[1]"));
- //     js.executeScript("arguments[0].scrollIntoView(true);", driver.findElement(By.xpath("")));
+        //     js.executeScript("arguments[0].scrollIntoView(true);", driver.findElement(By.xpath("")));
         List<String> usnList = new ArrayList<>();
         List<WebElement> list = driver.findElements(rows);
         for (WebElement userName : list) {
@@ -127,20 +128,20 @@ public class AdminPage extends BasePage {
         return usnList;
     }
 
-/*    Cách phức tạp hơn, tạo thành 1 object rồi so sánh theo object
-public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
-        List<UserInfo> usersList = new ArrayList<>();
-        List<WebElement> list = driver.findElements(tableSearchResults);
-        for (WebElement userName : list) {
-            String username = userName.findElement(By.xpath("(//div[contains(text(),'"+usernme+"')])[1]")).getText();
-            String role = userName.findElement(By.xpath("(//div[contains(text(),'"+rl+"')])[2]")).getText();
-            String name = userName.findElement(By.xpath("(//div[contains(text(),'"+nm+"')])[1]")).getText();
-            String status = userName.findElement(By.xpath("(//div[@class='header'][normalize-space()='Status'])[1]/following-sibling::div")).getText();
-            usersList.add(new UserInfo(username, role, name, status)
-            );
-        }
-        return usersList;
-    }*/
+    /*    Cách phức tạp hơn, tạo thành 1 object rồi so sánh theo object
+    public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
+            List<UserInfo> usersList = new ArrayList<>();
+            List<WebElement> list = driver.findElements(tableSearchResults);
+            for (WebElement userName : list) {
+                String username = userName.findElement(By.xpath("(//div[contains(text(),'"+usernme+"')])[1]")).getText();
+                String role = userName.findElement(By.xpath("(//div[contains(text(),'"+rl+"')])[2]")).getText();
+                String name = userName.findElement(By.xpath("(//div[contains(text(),'"+nm+"')])[1]")).getText();
+                String status = userName.findElement(By.xpath("(//div[@class='header'][normalize-space()='Status'])[1]/following-sibling::div")).getText();
+                usersList.add(new UserInfo(username, role, name, status)
+                );
+            }
+            return usersList;
+        }*/
     //Userrole DropDown
     public void clickUserRoleAdmin (){
         click(DdUserRole);
@@ -213,8 +214,8 @@ public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
             System.out.println("Username chạy từ" +username);
             if (username.equals(usernameExpected)) {
                 System.out.println("Found user with exact username");
-               WebElement checkbox = row.findElement(By.cssSelector("div[class='oxd-table-card-cell-checkbox']"));
-    //            WebElement checkbox = row.findElement(By.cssSelector("input[type='checkbox']"));
+                WebElement checkbox = row.findElement(By.cssSelector("div[class='oxd-table-card-cell-checkbox']"));
+                //            WebElement checkbox = row.findElement(By.cssSelector("input[type='checkbox']"));
                 if (!checkbox.isSelected()) {
                     checkbox.click();
                     System.out.println("Checked the username's checkbox");
@@ -223,7 +224,7 @@ public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
             }
         }
     }
-    public boolean isUserChecked(String usernameExpected) throws InterruptedException {
+    public boolean isUserChecked(String usernameExpected) /*throws InterruptedException*/ {
         moveToElement(rows);
         List<WebElement> rowList = driver.findElements(rows);
         for (WebElement row : rowList) {
@@ -231,9 +232,8 @@ public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
             System.out.println("Username chạy từ" +username);
             if (username.equals(usernameExpected)) {
                 System.out.println("xác nhận đến bước nay chua");
-                Thread.sleep(3000);
+//                Thread.sleep(3000);
                 return row.findElement(By.cssSelector("input[type='checkbox']")).isSelected();
-//Chú ý:
             }
         }
         return false;
@@ -269,14 +269,49 @@ public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
             if (username.equals(deletedUsername)) {
                 System.out.println("Vẫn tồn tại username bị xóa");
                 return false; }
-            }
+        }
         System.out.println("Username đã được xóa thành công");
         return true;
     }
 
-    //Edit Seletecd User Info
+    //Edit Selected User Info
+    public void clickEditButton (String usernameExpected) {
+        moveToElement(rows);
+        By rowByUsername = By.xpath("//div[@role='row'][.//div[@role='cell'][2]/div[normalize-space()='"+usernameExpected+"']]");
+        WebElement row = wait.until(ExpectedConditions.visibilityOfElementLocated(rowByUsername));
+        WebElement editButton = row.findElement(By.xpath(".//button[.//i[contains(@class,'bi-pencil-fill')]]"));
+        wait.until(ExpectedConditions.elementToBeClickable(editButton)).click();
 
+//
+/*        List<WebElement> rowList = driver.findElements(rows);
+        for (WebElement row : rowList) {
+            String username = row.findElement(By.xpath(".//div[@role='cell'][2]/div")).getText();
+            System.out.println("Username chạy từ" +username);
+            if (username.equals(usernameExpected)) {
+                System.out.println("Found user with exact username 2");*/
+//                WebElement btnEdit = row.findElement(By.xpath(".//button[.//i[contains(@class,'bi-pencil-fill')]]"));
+//               WebElement btnEdit = row.findElement(By.xpath(".//button[@class='oxd-icon-button oxd-table-cell-action-space'][2]"));
+//               WebElement btnEdit = row.findElement(By.xpath(".//button[@type='button'][2]"));
+//                wait.until(ExpectedConditions.elementToBeClickable(editButton)).click();
+    }
+    public boolean isChangedUsernameDisplayed (String editUserName){
+        isDisplayed(rows);
+        System.out.println("Navigate back to User System page");
+        moveToElement(rows);
+        List<WebElement> rowList = driver.findElements(rows);
+        for (WebElement row : rowList) {
+            String username = row.findElement(By.xpath(".//div[@role='cell'][2]/div")).getText();
+            System.out.println("Verify deleted username flow chạy từ" +username);
+            if (username.equals(editUserName)) {
+                System.out.println("Username is changed successfully");
+                return true;
+            }
+        }
+        System.out.println("Username is not changed");
+        return false;
+    }
 }
+
 /*    public void navigateJobTitleScreen (){
         if(isNotDisplayed(tabJob)){
             click(tabMore);

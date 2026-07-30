@@ -12,16 +12,16 @@ import java.time.Duration;
 
 public class BasePage {
     protected WebDriver driver;
-    WebDriverWait wait;
+    protected WebDriverWait wait;
     Actions action;
 
     // Khởi tạo Wait một lần duy nhất tại Constructor
     public BasePage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(50));
         this.action = new Actions(driver);
     }
-// class để rút gọn những action của driver
+    // class để rút gọn những action của driver
 /*    public void setWait(By locator){
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }*/
@@ -48,7 +48,7 @@ public class BasePage {
         return driver.findElement(locator).getText();*/
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();
     }
-//Chú ý đặc biệt hàm này
+    //Chú ý đặc biệt hàm này
     public boolean isDisplayed(By locator) {
 /*        wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
         return driver.findElement(locator).isDisplayed();*/
@@ -75,6 +75,5 @@ public class BasePage {
     public void clickByJs(By locator){
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("arguments[0].click();",driver.findElement(locator));
-
     }
 }

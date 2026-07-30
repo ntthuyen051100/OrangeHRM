@@ -6,7 +6,7 @@ import pages.LoginPage;
 
 import java.util.Set;
 
-public class loginTestV2 extends BaseTest {
+public class loginTestV2_IndependentTest extends BaseTest {
 
     @Test
     public void TC01_LoginFailWithBlankInfo (){

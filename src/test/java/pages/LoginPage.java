@@ -69,4 +69,10 @@ public class LoginPage extends BasePage {
     public String dashboardTitle(){
         return getText(titleDashboard);
     }
+    public void clearUsername (){
+        clear(txtUsername);
+    }
+    public void clearPw () {
+        clear(txtPassword);
+    }
 }

@@ -11,12 +11,11 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import pages.LoginPage;
 
 import java.time.Duration;
 import java.util.Set;
 
-public class LoginTest_V1_AllInOne {
+public class LoginTest_V1_NoPOM {
     WebDriver driver;
     //để sau xem lại
     // private static final Logger logger = (Logger) LogManager.getLogger(LoginTest.class);
