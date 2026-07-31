@@ -1,0 +1,38 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Regression">
+    <test name="Regression Test">
+        <classes>
+            <class name="test.AdminTest"/>
+            <!--chữ test ở đầu .AdminTest là gì? là package chứa class AdminTest
+            Trong <classes> sẽ điền list các class mà ta muốn run test. Name là [packageName].[className]. Ví dụ: firstpackage.FirstClass-->
+            <class name="test.CommonTest"/>
+            <!-- Nếu muốn chỉ định cụ hMethod muốn được run thì phải sử dụng <include>
+                <methods>
+                      <include name="firstTest" />
+                </methods>-->
+            <class name="test.loginTestV3_OneTestcase"/>
+        </classes>
+    </test>
+</suite>
+
+<!-- Cách run test hỗn hợp package, class và method
+<packages> và <classes> được khai báo cùng cấp, ngang hàng với nhau. <class> không phải khai báo dưới <packge>.
+Tuy nhiên khai báo <method> thì phải nằm dưới <class>
+
+<suite name="Combine Suite" verbose="1">
+    <test name="Combine Test">
+        <packages>
+            <package name="firstpackage" />
+        </packages>
+        <classes>
+            <class name="secondpackage.FirstClass" />
+            <class name="thirdpackage.FirstClass">
+                <methods>
+                    <include name="firstTest" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
+-->

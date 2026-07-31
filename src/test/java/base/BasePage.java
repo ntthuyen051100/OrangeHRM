@@ -5,6 +5,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import utils.ConfigReader;
 
 import java.time.Duration;
 import java.util.List;
@@ -17,7 +18,9 @@ public class BasePage {
     // Khởi tạo Wait một lần duy nhất tại Constructor
     public BasePage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(50));
+/*Sau khi có file config.properties + class ConfigReader thì có thể chỉnh lại thời gian wait theo trog file config như sau
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(50));*/
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(Long.parseLong(ConfigReader.getPropValue("implicitlyWait_timeout"))));
         this.action = new Actions(driver);
     }
     // class để rút gọn những action của driver

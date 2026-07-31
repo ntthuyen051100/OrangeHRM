@@ -1,9 +1,6 @@
 package test;
 
-import base.BasePage;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -43,7 +40,7 @@ Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth
     }
 
     @Test
-    public void TC01_HeaderElementNavigateRight() throws InterruptedException {
+    public void TC01_HeaderElementNavigateRight() {
         commonPage.clickBtnUpgrade();
         //Check BtnUpgrade di chuyen dun
         String current = driver.getWindowHandle();

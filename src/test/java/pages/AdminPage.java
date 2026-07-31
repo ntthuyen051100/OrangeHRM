@@ -1,9 +1,7 @@
 package pages;
 
 import base.BasePage;
-import models.UserInfo;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -130,11 +128,11 @@ public class AdminPage extends BasePage {
     }
 
     /*    Cách phức tạp hơn, tạo thành 1 object rồi so sánh theo object
-    public List<UserInfo> getSearchList(String usernme, String rl, String nm) {
+    public List<UserInfo> getSearchList(String username, String rl, String nm) {
             List<UserInfo> usersList = new ArrayList<>();
             List<WebElement> list = driver.findElements(tableSearchResults);
             for (WebElement userName : list) {
-                String username = userName.findElement(By.xpath("(//div[contains(text(),'"+usernme+"')])[1]")).getText();
+                String username = userName.findElement(By.xpath("(//div[contains(text(),'"+username+"')])[1]")).getText();
                 String role = userName.findElement(By.xpath("(//div[contains(text(),'"+rl+"')])[2]")).getText();
                 String name = userName.findElement(By.xpath("(//div[contains(text(),'"+nm+"')])[1]")).getText();
                 String status = userName.findElement(By.xpath("(//div[@class='header'][normalize-space()='Status'])[1]/following-sibling::div")).getText();

@@ -1,7 +1,5 @@
 package test;
 
-import models.UserInfo;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -10,6 +8,7 @@ import pages.AdminPage;
 import pages.CommonPage;
 import pages.EditUserPage;
 import pages.LoginPage;
+import utils.ConfigReader;
 
 import java.util.List;
 
@@ -26,7 +25,9 @@ public class AdminTest extends BaseTest{
         commonPage = new CommonPage(driver);
         editUserPage = new EditUserPage(driver);
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.login("Admin", "admin123");
+/* Sau khi xong class ConfigReader thì có thể thay bằng ntn để ko bị hardcode, chỉ cần thay đổi giá trị ở file config.properties là xong
+        loginPage.login("Admin", "admin123");*/
+        loginPage.login(ConfigReader.getPropValue("username"), ConfigReader.getPropValue("password"));
         commonPage.clickAdmin();
     }
 
