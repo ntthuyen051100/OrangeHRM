@@ -2,12 +2,15 @@ package pages;
 
 import base.BasePage;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static utils.LogUtils.logger;
 
 public class AdminPage extends BasePage {
 
@@ -93,10 +96,20 @@ public class AdminPage extends BasePage {
     }
 */
     //Search result
-    public boolean isSearchResultDisplayed(){
+    public boolean isSearchResultDisplayed()  {
         isDisplayed(rows);
         moveToElement(rows);
         return isDisplayed(rows);
+    }
+    public boolean isSearchResultDisplayed2(String keyword) {
+        try {
+            isDisplayed(rows);
+            logger.info("With "+ keyword + " has results");
+            return true;
+        } catch (TimeoutException e) {
+            logger.info(keyword + "' does not exist.");
+            return false;
+        }
     }
     public boolean isSearchResultNotDisplayed(){
         return isNotDisplayed(rows);
@@ -142,13 +155,17 @@ public class AdminPage extends BasePage {
             return usersList;
         }*/
     //Userrole DropDown
+    public void clickUserRole (String userRole){
+        click(DdUserRole);
+        click(By.xpath("//div[@role='option']/span[normalize-space()='" + userRole + "']"));
+        click(btnSearch);
+    }
     public void clickUserRoleAdmin (){
         click(DdUserRole);
         click(optAdmin);
         click(btnSearch);
     }
-    public List<String> getRoleSearchResult () throws InterruptedException {
-        Thread.sleep(3000);
+    public List<String> getRoleSearchResult () {
         List<String> roleList = new ArrayList<>();
         List<WebElement> list = driver.findElements(rows);
         for (WebElement roleName : list) {
@@ -163,8 +180,7 @@ public class AdminPage extends BasePage {
         sendKeys(nameSearchBox, keyword);
         isDisplayed(optNames);
     }
-    public List<String> getSearchNames () throws InterruptedException {
-        Thread.sleep(5000);
+    public List<String> getSearchNames () {
         List<String> nameList = new ArrayList<>();
         List<WebElement> names = driver.findElements(optNames);
         for (WebElement name : names) {
@@ -182,8 +198,7 @@ public class AdminPage extends BasePage {
         isDisplayed(rows);
         return keyword2;
     }
-    public List<String> getNameSearchResult () throws InterruptedException {
-        Thread.sleep(3000);
+    public List<String> getNameSearchResult () {
         List<String> nameList = new ArrayList<>();
         List<WebElement> names = driver.findElements(rows);
         for (WebElement name : names) {

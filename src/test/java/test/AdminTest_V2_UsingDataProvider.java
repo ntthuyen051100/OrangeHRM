@@ -1,5 +1,6 @@
 package test;
 
+import data.AdminPageData;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static utils.LogUtils.logger;
 
-public class AdminTest extends BaseTest{
+public class AdminTest_V2_UsingDataProvider extends BaseTest{
     AdminPage adminPage;
     SoftAssert softAssert;
     CommonPage commonPage;
@@ -33,49 +34,84 @@ public class AdminTest extends BaseTest{
         commonPage.clickAdmin();
     }
 
-    @Test
-    public void TC01_NavigateToUsersPage () {
-        Assert.assertTrue(commonPage.getTitle().contains("User"), "Navigate to wrong site");
-/*        System.out.println("Navigate to Users site"); Thay System.out.println = logger*/
-        logger.info("Navigate to Users site");
-    }
-
-    @Test
-    public void TC02_CheckSystemUsers_UsernameSearchBox_Valid() {
-//        adminPage.navigateUserScreen();
-        String keyword = "Admin";
-        //Nhập keyword rồi check xem có hiện kết quả search không
+    // Gọi chính xác tên DataProvider và Class chứa nó
+    @Test(dataProvider = "usernameKeywords", dataProviderClass = AdminPageData.class)
+    public void TC02_CheckSystemUsers_UsernameSearchBox_Valid(String keyword, boolean expectedResult) {
+        logger.info("Bắt đầu test với role = " + keyword);
         adminPage.searchUsername(keyword);
-        Assert.assertTrue(adminPage.isSearchResultDisplayed());
+//Giải thích C1: Nếu từ đầu đã xác định có data false thì tiến hành ntn để lúc lấy locator ko bị lỗi
+/*        if(expectedResult) {
+            boolean actualResult = adminPage.isSearchResultDisplayed();
+            Assert.assertEquals(actualResult, expectedResult);
+            List<String> users = adminPage.getUsernameSearchList(keyword);
+            for (String user : users) {
+                softAssert.assertEquals(user, keyword);
+                logger.info("Kết quả tìm kiếm hiện có với username keyword "+keyword+"là " + user);
+            }
+            softAssert.assertAll();
+        } else {
+            boolean actualResult = adminPage.isSearchResultNotDisplayed();
+            Assert.assertTrue(actualResult);
+            logger.info("với username keyword "+keyword+"không có kết quả tìm kiếm");
+        };*/
+ /* Trong trường hợp chỉ check valid thôi thì ntn là ok. Tại sao data NG ko dùng cách này được? Vì lúc này
+ data mình đưa thẳng vào parameter của locator rồi. Thì khi tới lệnh isSearchResultDisplayed dù mình mong muốn
+ ra false (aka ko tìm được kết quả) cũng ko được vì locator không dò được -> lỗi timeout.
+ Kỹ hơn: Nếu muốn test invalid thì không dùng dropdown, mà dùng control cho phép nhập tự do (textbox, autocomplete...)
+ hoặc mock dữ liệu. Với dropdown chuẩn, người dùng không thể chọn một giá trị không tồn tại,
+ nên việc đưa "ABC" vào DataProvider để click là không phản ánh đúng luồng sử dụng của ứng dụng.
+
+        boolean actualResult = adminPage.isSearchResultDisplayed();
+        Assert.assertEquals(actualResult, expectedResult);
+        if (actualResult) {
+            List<String> users = adminPage.getUsernameSearchList(keyword);
+            for (String user : users) {
+                softAssert.assertEquals(user, keyword);
+                logger.info("Kết quả tìm kiếm hiện có với username keyword "+keyword+"là " + user);
+            }
+            softAssert.assertAll();
+        }else logger.info("với username keyword "+keyword+"không có kết quả tìm kiếm");*/
+
+//Giải thích C2: Thay đổi hàm isSearchResultDisplayed2 có try catch để dù ra exception vẫn có thể dùng được mà không bị fail giữa chừng
+        boolean actualResult = adminPage.isSearchResultDisplayed2(keyword);
+        Assert.assertEquals(actualResult, expectedResult);
+        if (actualResult) {
+            List<String> users = adminPage.getUsernameSearchList(keyword);
+            for (String user : users) {
+                softAssert.assertEquals(user, keyword);
+                logger.info("Kết quả tìm kiếm hiện có với username keyword "+keyword+"là " + user);
+            }
+            softAssert.assertAll();
+        }else logger.info("với username keyword "+keyword+"không có kết quả tìm kiếm");
+    }
+
+    // Gọi chính xác tên DataProvider và Class chứa nó
+    @Test(dataProvider = "userRoleValidData", dataProviderClass = AdminPageData.class)
+    public void TC03_CheckSystemUsers_UserRole_Valid(String role, boolean expectedResult) {
+        logger.info("Bắt đầu test với role = "+role);
+        adminPage.clickUserRole(role);
+        //Set kết quả xem bảng resutl có hiển thị không
+        boolean actualResult = adminPage.isSearchResultDisplayed();
+        // Assert kết quả sau mỗi lượt chạy
+        Assert.assertEquals(actualResult, expectedResult);
         //Check xem trong kết quả có trùng với keyword
-        List<String> users = adminPage.getUsernameSearchList(keyword);
-        for(String user : users){
-            softAssert.assertEquals(user,keyword);
-            System.out.println("Kết quả tìm kiếm hiện có là " +user);
+        if (expectedResult) {
+            List<String> roles = adminPage.getRoleSearchResult();
+            int quan = 0;
+            for (String eachRole : roles) {
+                quan++;
+                softAssert.assertEquals(eachRole, role);
+
+            }
+            logger.info("Số kết quả tìm kiếm hiện có với role = "+role+" là " + quan + "và kết quả là \n" + roles);
+            softAssert.assertAll();
         }
-        softAssert.assertAll();
+        else logger.info("Với role "+role+"không tồn tại nên không có kết quả");
+        logger.info("Kết thúc test với role = "+role);
     }
 
     @Test
-    public void TC03_CheckSystemUsers_UserRole_Valid() throws InterruptedException {
-//        adminPage.navigateUserScreen();
-        adminPage.clickUserRoleAdmin();
-        Assert.assertTrue(adminPage.isSearchResultDisplayed());
-        //Check xem trong kết quả có trùng với keyword
-        List<String> roles = adminPage.getRoleSearchResult();
-        int quan = 0;
-        for(String role : roles){
-            quan ++;
-            softAssert.assertEquals(role,"Admin");
-
-        }
-//        System.out.println("Số kết quả tìm kiếm hiện có là " + quan +"và kết quả là"+roles);
-        logger.info("Số kết quả tìm kiếm hiện có là " + quan +"và kết quả là"+roles);
-        softAssert.assertAll();
-    }
-
-    @Test
-    public void TC04_CheckSystemUsers_EmployeeName_Valid() throws InterruptedException {
+    public void TC04_CheckSystemUsers_EmployeeName_Valid()  {
 //        adminPage.navigateUserScreen();
         String keyword = "S";
         adminPage.typeName(keyword);
@@ -102,7 +138,7 @@ public class AdminTest extends BaseTest{
     }
 
     @Test
-    public void TC05_CheckSystemUsers_ButtonResetOK() throws InterruptedException {
+    public void TC05_CheckSystemUsers_ButtonResetOK() {
         String keyword = "S";
         adminPage.typeName(keyword);
         adminPage.searchName();
@@ -119,7 +155,7 @@ public class AdminTest extends BaseTest{
     @Test
     //Ý tưởng: khi result table hiển thị full, chọn 1 row có username trùng với keyword nhập vào, click ô select
 //xóa ô đã chọn, rồi check xem username đó còn hiển thị nữa không, ko là OK
-    public void TC06_CheckSystemUsers_ButtonDeleteSelected() /*throws InterruptedException*/ {
+    public void TC06_CheckSystemUsers_ButtonDeleteSelected() {
         adminPage.isSearchResultDisplayed();
         String userName = "somethingsdf";
         adminPage.checkUser(userName);
