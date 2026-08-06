@@ -1,11 +1,12 @@
 package test;
 
+import base.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pages.AdminPage;
-import pages.CommonPage;
+import pages.SideMenu;
 import pages.EditUserPage;
 import pages.LoginPage;
 import utils.ConfigReader;
@@ -13,35 +14,74 @@ import utils.ConfigReader;
 import java.util.List;
 
 import static utils.LogUtils.logger;
+/*Đã làm được trong class này:
+- Tách Page và Test ra theo POM, từng test độc lập
+- Lấy dữ liệu từ file config.properties (tạo file config.properties -> Tạo class ConfigReader trong src/main/java/utils
+để đọc config -> mỗi lần dùng ko cần khai báo, ko cần new, chấm dùng thẳng là được vì là method public static)
+- Thêm Logger để in log dễ nhìn (Tạo 2 file log4j2.properties + log4j2.xml trong src/main/resources -> Tạo class LogUtils
+từ class có sẵn Logger của log4j -> ở class hay page muốn dùng thì ko khai báo, no new, dùng thẳng vì method là public static void)
+!!!Tuy nhiên data vẫn phải hardcode trong từng test -> Thiết lập thêm DataProvider ở ver2*/
 
-public class AdminTest extends BaseTest{
+public class AdminTest_V1_RunSequentialWithHardcodedData extends BaseTest {
+/*B1: Khai báo biến PageObject thành biến toàn cục của Class (Instance Variable). Khi khai báo ở đây, tất cả các
+hàm nằm bên trong class AdminTest (bao gồm cả @BeforeMethod và @Test) đều có quyền nhìn thấy và sử dụng những biến này.*/
     AdminPage adminPage;
     SoftAssert softAssert;
-    CommonPage commonPage;
+    SideMenu sideMenu;
     EditUserPage editUserPage;
 
+/*B2: Tạo 1 hàm BeforeMethod để new mới giá trị cho biến toàn cục. Mỗi test method đều dùng lại được các Page Object
+mà không phải new nhiều lần trong từng @Test.
+BeforeMethod của BaseTest và BeforeMethod của AdminTest có thể cùng có mà ko ra lỗi.
+Thứ tự chạy BeforeMethod (BaseTest) -> BeforeMethod (AdminTest) -> @Test (AdminTest)*/
     @BeforeMethod
-    public void LoginSuccess() throws InterruptedException {
+    public void LoginSuccess() {
         softAssert = new SoftAssert();
+/*Ở đây không phải khai báo biến mới, chỉ gán giá trị cho biến đã có thôi. Nên không có tên Class ở đầu ntn nữa
+AdminPage adminPage = new AdminPage(driver);*/
         adminPage = new AdminPage(driver);
-        commonPage = new CommonPage(driver);
+        sideMenu = new SideMenu(driver);
         editUserPage = new EditUserPage(driver);
         LoginPage loginPage = new LoginPage(driver);
 /* Sau khi xong class ConfigReader thì có thể thay bằng ntn để ko bị hardcode, chỉ cần thay đổi giá trị ở file config.properties là xong
         loginPage.login("Admin", "admin123");*/
         loginPage.login(ConfigReader.getPropValue("username"), ConfigReader.getPropValue("password"));
-        commonPage.clickAdmin();
+        sideMenu.clickAdmin();
     }
+/*
+!!!CHÚ Ý 1: Tuyệt đối không gộp vừa khai báo biến vừa new ngoài method, nếu làm vậy Java khởi tạo các biến toàn cục
+(Instance Variables) của Class trước và chạy những biến này trước tiên.
+Java chạy đến dòng CommonPage commonPage = new CommonPage(driver) -> để tạo được CommonPage, nó bắt buộc phải truyền giá trị của biến driver vào.
+Tuy nhiên, lúc này hàm @BeforeMethod (nơi chứa lệnh driver = new ChromeDriver()) chưa hề được TestNG gọi chạy -> biến
+driver lúc này hoàn toàn chưa có dữ liệu, giá trị của nó mặc định là null.
+=> đang truyền một giá trị null vào hàm khởi tạo của CommonPage. Khi cấu trúc bên trong của Page Object cố gắng sử dụng
+biến driver này (hoặc thư viện Selenium như PageFactory cố scan element trên driver bị null), hệ thống sẽ lập tức crash
+và báo lỗi NullPointerException hoặc Driver must be set ngay lập tức.
+
+public class AdminTest_V1_RunSequentialWithHardcodedData extends BaseTest {
+    AdminPage adminPage = new AdminPage(driver);;
+    CommonPage commonPage = new CommonPage(driver);
+
+!!!CHÚ Ý 2: Tuyệt đối không gộp vừa khai báo biến vừa new trong @BeforeTest, vì lúc này các biến được khai báo sẽ là
+biến cục bộ (Local Variable). Biến này chỉ sinh ra và tồn tại trong phạm vi cặp dấu ngoặc nhọn { } của hàm
+LoginSuccess(). Ngay khi hàm này chạy xong, biến adminPage đó sẽ lập tức bị xóa khỏi bộ nhớ.
+    @BeforeMethod
+    public void LoginSuccess() {
+        SoftAssert softAssert = new SoftAssert();
+        AdminPage adminPage = new AdminPage(driver);
+        CommonPage commonPage = new CommonPage(driver);
+        LoginPage loginPage = new LoginPage(driver);
+    }*/
 
     @Test
     public void TC01_NavigateToUsersPage () {
-        Assert.assertTrue(commonPage.getTitle().contains("User"), "Navigate to wrong site");
+        Assert.assertTrue(sideMenu.getTitle().contains("User"), "Navigate to wrong site");
 /*        System.out.println("Navigate to Users site"); Thay System.out.println = logger*/
         logger.info("Navigate to Users site");
     }
 
     @Test
-    public void TC02_CheckSystemUsers_UsernameSearchBox_Valid() {
+    public void TC02_UsernameSearchBox_Valid() {
 //        adminPage.navigateUserScreen();
         String keyword = "Admin";
         //Nhập keyword rồi check xem có hiện kết quả search không
@@ -57,7 +97,7 @@ public class AdminTest extends BaseTest{
     }
 
     @Test
-    public void TC03_CheckSystemUsers_UserRole_Valid() throws InterruptedException {
+    public void TC03_UserRole_Valid() throws InterruptedException {
 //        adminPage.navigateUserScreen();
         adminPage.clickUserRoleAdmin();
         Assert.assertTrue(adminPage.isSearchResultDisplayed());
@@ -75,22 +115,23 @@ public class AdminTest extends BaseTest{
     }
 
     @Test
-    public void TC04_CheckSystemUsers_EmployeeName_Valid() throws InterruptedException {
+    public void TC04_EmployeeName_Valid() {
 //        adminPage.navigateUserScreen();
-        String keyword = "S";
+        String keyword = "mandaa";
         adminPage.typeName(keyword);
         //Check xem trong list gợi ý có trùng với keyword
         adminPage.getSearchNames();
         List<String> suggestNames = adminPage.getSearchNames();
         for(String name : suggestNames){
-            softAssert.assertTrue(name.contains(keyword.toLowerCase()),"Suggest name doesn't contain keyword");
+            softAssert.assertTrue(name.toLowerCase().contains(keyword.toLowerCase()),"Suggest name doesn't contain keyword");
         }
 //        System.out.println("Số kết quả tìm kiếm đề xuất là cụ thể là \n" + suggestNames);
         logger.info("Số kết quả tìm kiếm đề xuất là cụ thể là \n" + suggestNames);
         softAssert.assertAll();
         /*        adminPage.searchName(); nếu chạy cả 2 lệnh thì sẽ bị lặp thao tác vì ở dưới mặc dù là gán giá trị
          * nhưng thực chất cũng là chạy thêm 1 lần nữa. Lúc này thì tất nhiên bị kéo xuống dươ màn hình rồi nên bị lỗi */
-        String searchName = adminPage.searchName();
+        String searchName = adminPage.getOptFirstName();
+        adminPage.selectFirstName();
         adminPage.getNameSearchResult();
         List<String> searchNameList = adminPage.getNameSearchResult();
         for(String name : searchNameList){
@@ -102,10 +143,10 @@ public class AdminTest extends BaseTest{
     }
 
     @Test
-    public void TC05_CheckSystemUsers_ButtonResetOK() throws InterruptedException {
-        String keyword = "S";
+    public void TC05_ButtonResetOK(){
+        String keyword = "manda";
         adminPage.typeName(keyword);
-        adminPage.searchName();
+        adminPage.selectFirstName();
         adminPage.isSearchResultDisplayed();
         Assert.assertTrue(adminPage.isSearchResultDisplayed(),"Kết quả ko được hiển thị");
         adminPage.clearSearchResult();
@@ -119,9 +160,9 @@ public class AdminTest extends BaseTest{
     @Test
     //Ý tưởng: khi result table hiển thị full, chọn 1 row có username trùng với keyword nhập vào, click ô select
 //xóa ô đã chọn, rồi check xem username đó còn hiển thị nữa không, ko là OK
-    public void TC06_CheckSystemUsers_ButtonDeleteSelected() /*throws InterruptedException*/ {
+    public void TC06_ButtonDeleteSelected() /*throws InterruptedException*/ {
         adminPage.isSearchResultDisplayed();
-        String userName = "somethingsdf";
+        String userName = "asdfdgf";
         adminPage.checkUser(userName);
         Assert.assertTrue(adminPage.isUserChecked(userName), "Username chưa được chọn");
 //        System.out.println("Username tương ứng đã được chọn");
@@ -129,9 +170,9 @@ public class AdminTest extends BaseTest{
     }
 
     @Test
-    public void TC07_CheckSystemUser_DeleteSelectedUser() {
+    public void TC07_DeleteSelectedUser() {
         adminPage.isSearchResultDisplayed();
-        String userName = "somethingsdf";
+        String userName = "asdfdgf";
         adminPage.checkUser(userName);
         adminPage.clickDeleteSelectedButton();
         Assert.assertTrue(adminPage.isPopupDeleteDisplayed(), "PopUp is not displayed");
@@ -156,6 +197,7 @@ public class AdminTest extends BaseTest{
         Assert.assertTrue(adminPage.isDeleteSuccessMessageDisplayed(),"Delete Message is not displayed");
 //        System.out.println("Delete success message is displayed");
         logger.info("Delete success message is displayed");
+
         adminPage.isSearchResultDisplayed();
         adminPage.checkUserAfterDelete(userName);
         Assert.assertTrue(adminPage.checkUserAfterDelete(userName));
@@ -164,11 +206,10 @@ public class AdminTest extends BaseTest{
     }
 
     @Test
-    //Ý tưởng: search username, chọn edit thông tin username. Sau đó quay lại màn hình SystemUser
-//ko search mà điều khiển màn hình tới username tương ứng trong list. Lấy thông tin từ row ra xem
-//có hiển thị đúng không.
-    public void TC08_CheckSystemUser_EditUserInfo() throws InterruptedException {
-        String username = "FML20009800";
+//Ý tưởng: search username, chọn edit thông tin username. Sau đó quay lại màn hình SystemUser
+//ko search mà điều khiển màn hình tới username tương ứng trong list. Lấy thông tin từ row ra xem có hiển thị đúng không.
+    public void TC08_EditValidUserInfo()  {
+        String username = "ABC123DEF";
         adminPage.clickEditButton(username);
         Assert.assertTrue(editUserPage.isTitleDisplayed(),"Navigate to the wrong site");
         System.out.println("Navigate to edit user page");
@@ -177,8 +218,7 @@ public class AdminTest extends BaseTest{
         String newUsername = "TestAuto202178";
         editUserPage.setUsername(newUsername);
         editUserPage.submitChanges();
-        Thread.sleep(5000);
-        Assert.assertTrue(adminPage.isChangedUsernameDisplayed(newUsername));
+        Assert.assertTrue(adminPage.isChangedUsernameDisplayedInCurrentPage(newUsername));
         System.out.println("Done");
     }
 }

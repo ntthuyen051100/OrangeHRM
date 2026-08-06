@@ -12,7 +12,7 @@ public class ConfigReader {
 
 // Static block to load the properties file once at runtime -> "properties" variable always has value -> not null
     static {
-        //Tạo đường dẫn đến file configs.properties mặc định
+        //Tạo đường dẫn đến file configs.properties mặc định để đọc key value từ đây
         String filePath = "src/test/resources/config.properties";
         try {
             //Khởi tạo giá trị cho đối tượng của class FileInputStream

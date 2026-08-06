@@ -38,11 +38,16 @@ public class AdminPage extends BasePage {
     By optEss = By.xpath("//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div[1]/div[2]/form/div[1]/div/div[2]/div/div[2]/div/div[2]/div[3]");
 
     By nameSearchBox = By.cssSelector("input[placeholder='Type for hints...']");
-    By optNames = By.cssSelector("div[role='listbox']");
-    By optName = By.xpath("(//div[@role='option' and @class='oxd-autocomplete-option'])[1]/span");
+    By optNames = By.cssSelector("div[role='listbox']>div>span");
+    By optLoading = By.xpath("(//div[@role='option' and contains(text(),'Searching')])");
+    By option = By.xpath("(//div[@role='option'])");;
+    By optNoRecord = By.xpath("(//div[@role='option' and contains(text(),'No Records Found')])");;
+    By msgInvalidName = By.xpath("//span[@class='oxd-text oxd-text--span oxd-input-field-error-message oxd-input-group__message']");
+    By optFirstName = By.xpath("(//div[@role='option' and @class='oxd-autocomplete-option'])[1]/span");
     //Có thể viết gọn hơn thành //div[@role='option'])[1]/span miễn là khi search trên DOM trong devTools hiện 1 kết quả là được.
     //Giải thích: // - tìm khắp DOM thấy chỗ nào role='option', lấy div thứ 1. Rồi trong div đó chứa tag span chứa keyword
     // nên ta có lệnh /span là đi tiếp xuống chỗ tag con là span.
+    By msgNoRecordsFound = By.xpath("//div[@class='oxd-toast oxd-toast--info oxd-toast-container--toast']");
 
     By btnDeleteSelected = By.cssSelector("button[class='oxd-button oxd-button--medium oxd-button--label-danger orangehrm-horizontal-margin']");
     By popupDelete = By.cssSelector("div[role='document']");
@@ -107,7 +112,7 @@ public class AdminPage extends BasePage {
             logger.info("With "+ keyword + " has results");
             return true;
         } catch (TimeoutException e) {
-            logger.info(keyword + "' does not exist.");
+            logger.info(keyword + " does not exist.");
             return false;
         }
     }
@@ -155,8 +160,20 @@ public class AdminPage extends BasePage {
             return usersList;
         }*/
     //Userrole DropDown
-    public void clickUserRole (String userRole){
+    public boolean isUserRoleDisplayed (String userRole){
+        try {
+            isDisplayed(By.xpath("//div[@role='option']/span[normalize-space()='" + userRole + "']"));
+            logger.info(userRole + " is displayed");
+            return true;
+        } catch (TimeoutException e) {
+            logger.info(userRole + " does not exist.");
+            return false;
+        }
+    }
+    public void clickUserRole (){
         click(DdUserRole);
+    }
+    public void selectUserRole (String userRole){
         click(By.xpath("//div[@role='option']/span[normalize-space()='" + userRole + "']"));
         click(btnSearch);
     }
@@ -166,6 +183,7 @@ public class AdminPage extends BasePage {
         click(btnSearch);
     }
     public List<String> getRoleSearchResult () {
+        isDisplayed(rows);
         List<String> roleList = new ArrayList<>();
         List<WebElement> list = driver.findElements(rows);
         for (WebElement roleName : list) {
@@ -178,7 +196,17 @@ public class AdminPage extends BasePage {
     //Employee name
     public void typeName (String keyword) {
         sendKeys(nameSearchBox, keyword);
-        isDisplayed(optNames);
+        isNotDisplayed(optLoading);
+/*        isDisplayed(optNames);*/
+    }
+    public boolean hasSearchResult() {
+        try{
+            isDisplayed(optNames);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
     public List<String> getSearchNames () {
         List<String> nameList = new ArrayList<>();
@@ -189,16 +217,27 @@ public class AdminPage extends BasePage {
         }
         return nameList;
     }
-    public String searchName () {
-        isDisplayed(optName);
-        String keyword2 = getText(optName);
-        click(optName);
+    public String getOptFirstName (){
+        return getText(optFirstName);
+    }
+    public void selectFirstName () {
+        isDisplayed(optFirstName);
+        click(optFirstName);
         click(btnSearch);
-        moveToPageBottom();
-        isDisplayed(rows);
-        return keyword2;
+    }
+    public boolean isMsgNoRecordsFoundDisplayed (String keyword){
+        try {
+            isDisplayed(msgNoRecordsFound);
+            logger.info("With "+ keyword + ", there is no employee name");
+            return true;
+        } catch (TimeoutException e) {
+            logger.info("With "+ keyword + ", there are exist employee name");
+            return false;
+        }
     }
     public List<String> getNameSearchResult () {
+        moveToPageBottom();
+        isDisplayed(rows);
         List<String> nameList = new ArrayList<>();
         List<WebElement> names = driver.findElements(rows);
         for (WebElement name : names) {
@@ -225,7 +264,7 @@ public class AdminPage extends BasePage {
         List<WebElement> rowList = driver.findElements(rows);
         for (WebElement row : rowList) {
             String username = row.findElement(By.xpath(".//div[@role='cell'][2]/div")).getText();
-            System.out.println("Username chạy từ" +username);
+            System.out.println("Username chạy từ " +username);
             if (username.equals(usernameExpected)) {
                 System.out.println("Found user with exact username");
                 WebElement checkbox = row.findElement(By.cssSelector("div[class='oxd-table-card-cell-checkbox']"));
@@ -326,7 +365,7 @@ public class AdminPage extends BasePage {
         System.out.println("Username is not changed");
         return false;
     }
-    public boolean isChangedUsernameDisplayed(String usernameExpected) {
+    public boolean isChangedUsernameDisplayedWithPages(String usernameExpected) {
         while (true) {
             // 1. Lấy tất cả row của page hiện tại
             List<WebElement> rowList = driver.findElements(rows);

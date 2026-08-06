@@ -22,19 +22,42 @@ public class AdminPageData {
                 {"MacBook Pro",false}
         };
     }
-
-    @DataProvider(name = "userRoleValidData")
+    @DataProvider(name = "usernameKeywordsV2", parallel = true)
+    public static Object[][] getUsernameSearchDataV2() {
+        return new Object[][]{
+                {"Admin",true},
+                {"MacBook Pro",false}
+        };
+    }
+    @DataProvider(name = "userRoleData")
     public static Object[][] getUserRoleSearchData() {
         return new Object[][]{
                 {"Admin",true},
                 {"ESS",true},
+                {"ABC",false}
         };
     }
-    @DataProvider(name = "employeeNameKeywords")
+    @DataProvider(name = "userRoleDataV2", parallel = true)
+    public static Object[][] getUserRoleSearchDataV2() {
+        return new Object[][]{
+                {"Admin",true},
+                {"ESS",true},
+                {"ABC",false}
+        };
+    }
+    @DataProvider(name = "employeeNameValidKeywords")
     public static Object[][] getEmployeeNameSearchData() {
         return new Object[][]{
-                {"A"},
-                {"test"}
+                {"Employee"},
+                {"John"}
+        };
+    }
+    @DataProvider(name = "employeeNameValidKeywordsV2", parallel = true)
+    public static Object[][] getEmployeeNameSearchDataV2() {
+        return new Object[][]{
+                {"Employee"},
+                {"aa"},
+                {"mandaa"}
         };
     }
 }

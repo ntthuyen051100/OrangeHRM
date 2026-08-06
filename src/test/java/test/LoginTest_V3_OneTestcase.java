@@ -1,12 +1,13 @@
 package test;
 
+import base.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.LoginPage;
 
 import java.util.Set;
 
-public class loginTestV3_OneTestcase extends BaseTest {
+public class LoginTest_V3_OneTestcase extends BaseTest {
 
     @Test
     public void LoginFullFlow() throws InterruptedException {

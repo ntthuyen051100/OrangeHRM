@@ -17,7 +17,7 @@ public class BasePage {
 
     // Khởi tạo Wait một lần duy nhất tại Constructor
     public BasePage(WebDriver driver) {
-        this.driver = driver;
+    this.driver = driver;
 /*Sau khi có file config.properties + class ConfigReader thì có thể chỉnh lại thời gian wait theo trog file config như sau
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(50));*/
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(Long.parseLong(ConfigReader.getPropValue("implicitlyWait_timeout"))));

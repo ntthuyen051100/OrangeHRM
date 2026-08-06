@@ -7,9 +7,8 @@ import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-public class CommonPage extends BasePage {
+public class SideMenu extends BasePage {
     //Header element
     By title = By.cssSelector(".oxd-topbar-header-title");
     By btnUpgrade = By.cssSelector(".oxd-glass-button.orangehrm-upgrade-button");
@@ -40,7 +39,7 @@ public class CommonPage extends BasePage {
     By searchBox = By.cssSelector("input[placeholder='Search']");
     By searchResultList = By.cssSelector("ul[class='oxd-main-menu']");
 //    By searchResult = By.xpath("(//li[@class='oxd-main-menu-item-wrapper'])[1~12]")
-    public CommonPage(WebDriver driver) {
+    public SideMenu(WebDriver driver) {
         super(driver);
     }
     public String getTitle(){

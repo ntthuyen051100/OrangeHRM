@@ -1,18 +1,18 @@
 package test;
 
+import base.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
-import pages.CommonPage;
+import pages.SideMenu;
 import pages.LoginPage;
 
-import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Set;
 
-public class CommonTest extends BaseTest {
-    CommonPage commonPage;
+public class SideMenuTest extends BaseTest {
+    SideMenu sideMenu;
     SoftAssert softAssert;
 /* Lý do tại sao phải khai báo đây, vì ở method LoginSuccess trong class @BeforeMethod CỦA CommonPage
     thì commonPage được new mới là biến cục bộ, chỉ tồn tại trong method LoginSuccess. Khi thực hiện xong
@@ -28,20 +28,20 @@ chay trước con*/
     @BeforeMethod
     public void LoginSuccess() {
         softAssert = new SoftAssert();
-        commonPage = new CommonPage(driver);
+        sideMenu = new SideMenu(driver);
         LoginPage loginPage = new LoginPage(driver);
 /* Ở đây chỉ có loginPage khi new phải khai báo class gốc vì loginPage đây new với giá trị mới hoàn toàn, biến cục bộ,
 end method này là clear. Còn softAssert commonPage tuyệt đối ko đc khai báo class gốc lên đầu vì nếu vậy xem như new mới
 1 biến có giá trị mới khác với biến toàn cục khai báo ngoài method. Mục đích của mình để reuse lại cho những testcase dưới.
 Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth thôi -> OK */
         loginPage.login("Admin", "admin123");
-        Assert.assertEquals(commonPage.getTitle(),"Dashboard","Navigate to the wrong page");
+        Assert.assertEquals(sideMenu.getTitle(),"Dashboard","Navigate to the wrong page");
         System.out.println("After login, navigate to Dashboard page");
     }
 
     @Test
     public void TC01_HeaderElementNavigateRight() {
-        commonPage.clickBtnUpgrade();
+        sideMenu.clickBtnUpgrade();
         //Check BtnUpgrade di chuyen dun
         String current = driver.getWindowHandle();
         Set<String> tabs = driver.getWindowHandles();
@@ -59,7 +59,7 @@ Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth
         driver.switchTo().window(current);
 
         //Check button Help
-        commonPage.clickBtnHelp();
+        sideMenu.clickBtnHelp();
         String current2 = driver.getWindowHandle();
         Set<String> tabs2 = driver.getWindowHandles();
         for (String tab : driver.getWindowHandles()) {
@@ -78,16 +78,16 @@ Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth
         //Check cac mục ở trong dropdown
 //        commonPage.clickdDropdown();
         //Check button About
-        commonPage.clickBtnAbout();
-        softAssert.assertTrue(commonPage.dialogAboutIsDisplayed(), "Dialog is not displayed");
-        softAssert.assertEquals(commonPage.dialogAboutTitleIs(), "About");
-        commonPage.closeDialogAbout();
-        softAssert.assertTrue(commonPage.dialogAboutIsClosed());
+        sideMenu.clickBtnAbout();
+        softAssert.assertTrue(sideMenu.dialogAboutIsDisplayed(), "Dialog is not displayed");
+        softAssert.assertEquals(sideMenu.dialogAboutTitleIs(), "About");
+        sideMenu.closeDialogAbout();
+        softAssert.assertTrue(sideMenu.dialogAboutIsClosed());
         System.out.println("About Dialog is closed");
 
         //Check button support
 //        commonPage.clickdDropdown();
-        commonPage.clickBtnSupport();
+        sideMenu.clickBtnSupport();
         String actualSupportURL = driver.getCurrentUrl();
 //        softAssert.assertTrue(currentSupport.contentEquals("https://opensource-demo.orangehrmlive.com/web/index.php/help/support"));
         String expectedSupportURL = "https://opensource-demo.orangehrmlive.com/web/index.php/help/support";
@@ -98,14 +98,14 @@ Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth
         //Check button ChangePw
 //        Thread.sleep(5000);
 //        commonPage.clickdDropdown();
-        commonPage.clickChangePw();
+        sideMenu.clickChangePw();
         String actualChangePwURL = driver.getCurrentUrl();
 //        softAssert.assertTrue(currentSupport.contentEquals("https://opensource-demo.orangehrmlive.com/web/index.php/help/support"));
         softAssert.assertTrue(actualChangePwURL.contains("updatePassword"));
         System.out.println("Navigate to the correct site");
 
         //Check button Logout
-        commonPage.clickLogout();
+        sideMenu.clickLogout();
 //        Thread.sleep(5000);
         String actualLogoutURL = driver.getCurrentUrl();
         softAssert.assertTrue(actualLogoutURL.contentEquals("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"));
@@ -115,7 +115,7 @@ Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth
 
     @Test
     public void TC02_ClickTheLogoThenNavigateRight() {
-        commonPage.clickLogo();
+        sideMenu.clickLogo();
         String actualUrl = driver.getCurrentUrl();
         String expectedUrl = "https://orangehrm.com/";
         Assert.assertEquals(actualUrl, expectedUrl, "Navigate to the wrong site");
@@ -126,11 +126,11 @@ Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth
     public void TC03_SearchBoxWithValidInputData(){
         String keyword = "ASH";
         //Click seach box
-        commonPage.clickSearchBox();
-        commonPage.inputSeachBox(keyword);
+        sideMenu.clickSearchBox();
+        sideMenu.inputSeachBox(keyword);
         //Check xem khu vực kết quả có hiển thị đúng không
 //      commonPage.verifySearchResult("A");
-        List<String> results = commonPage.getSearchResults();
+        List<String> results = sideMenu.getSearchResults();
         for(String result : results){
             Assert.assertTrue(result.contains(keyword.toLowerCase()),"Result is incorrect: " + result);
         }
@@ -139,9 +139,9 @@ Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth
     @Test
     public void TC04_SearchBoxWithInValidInputData(){
         String keyword = "xxxaaaaiiii";
-        commonPage.clickSearchBox();
-        commonPage.inputSeachBox(keyword);
-        List<String> results = commonPage.getSearchResults();
+        sideMenu.clickSearchBox();
+        sideMenu.inputSeachBox(keyword);
+        List<String> results = sideMenu.getSearchResults();
         for(String result : results){
             Assert.assertFalse(result.contains(keyword.toLowerCase()),"Result is incorrect: " + result);
         }
@@ -149,31 +149,31 @@ Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth
     }
     @Test
     public void TC04_SideMenuElementNavigateRight() throws InterruptedException {
-        commonPage.clickAdmin();
-        softAssert.assertTrue(commonPage.getTitle().contains("Admin"),"Navigate to the wrong page");
-        commonPage.clickPim();
-        softAssert.assertEquals(commonPage.getTitle(),"PIM","Navigate to the wrong page");
-        commonPage.clickLeave();
-        softAssert.assertEquals(commonPage.getTitle(),"Leave","Navigate to the wrong page");
-        commonPage.clickTime();
-        softAssert.assertTrue(commonPage.getTitle().contains("Time"),"Navigate to the wrong page");
-        commonPage.clickRecruitment();
-        softAssert.assertEquals(commonPage.getTitle(),"Recruitment","Navigate to the wrong page");
-        commonPage.clickMyInfo();
+        sideMenu.clickAdmin();
+        softAssert.assertTrue(sideMenu.getTitle().contains("Admin"),"Navigate to the wrong page");
+        sideMenu.clickPim();
+        softAssert.assertEquals(sideMenu.getTitle(),"PIM","Navigate to the wrong page");
+        sideMenu.clickLeave();
+        softAssert.assertEquals(sideMenu.getTitle(),"Leave","Navigate to the wrong page");
+        sideMenu.clickTime();
+        softAssert.assertTrue(sideMenu.getTitle().contains("Time"),"Navigate to the wrong page");
+        sideMenu.clickRecruitment();
+        softAssert.assertEquals(sideMenu.getTitle(),"Recruitment","Navigate to the wrong page");
+        sideMenu.clickMyInfo();
         softAssert.assertTrue(driver.getCurrentUrl().contains("viewPersonalDetails"),"Navigate to the wrong page");
-        commonPage.clickPerf();
-        softAssert.assertTrue(commonPage.getTitle().contains("Performance"),"Navigate to the wrong page");
-        commonPage.clickMyDashboard();
-        softAssert.assertEquals(commonPage.getTitle(),"Dashboard","Navigate to the wrong page");
-        commonPage.clickDirectory();
-        softAssert.assertEquals(commonPage.getTitle(),"Directory","Navigate to the wrong page");
-        commonPage.clickMaintenance();
+        sideMenu.clickPerf();
+        softAssert.assertTrue(sideMenu.getTitle().contains("Performance"),"Navigate to the wrong page");
+        sideMenu.clickMyDashboard();
+        softAssert.assertEquals(sideMenu.getTitle(),"Dashboard","Navigate to the wrong page");
+        sideMenu.clickDirectory();
+        softAssert.assertEquals(sideMenu.getTitle(),"Directory","Navigate to the wrong page");
+        sideMenu.clickMaintenance();
         softAssert.assertTrue(driver.getCurrentUrl().contains("maintenance"),"Navigate to the wrong page");
-        commonPage.backToBeforeScreen();
-        commonPage.clickClaim();
-        softAssert.assertEquals(commonPage.getTitle(),"Claim","Navigate to the wrong page");
-        commonPage.clickBuzz();
-        softAssert.assertEquals(commonPage.getTitle(),"Buzz","Navigate to the wrong page");
+        sideMenu.backToBeforeScreen();
+        sideMenu.clickClaim();
+        softAssert.assertEquals(sideMenu.getTitle(),"Claim","Navigate to the wrong page");
+        sideMenu.clickBuzz();
+        softAssert.assertEquals(sideMenu.getTitle(),"Buzz","Navigate to the wrong page");
 
         softAssert.assertAll("All header elements are navigate to right site");
     }

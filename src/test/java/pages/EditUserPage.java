@@ -25,7 +25,7 @@ public class EditUserPage extends BasePage {
     public boolean isFormDisplayed (){
         return isDisplayed(editForm);
     }
-    public void setUsername (String editName) throws InterruptedException {
+    public void setUsername (String editName) {
         isDisplayed(username);
         isNotDisplayed(loadingOverlay);
 /*

@@ -1,6 +1,6 @@
-package test;
+package base;
 
-import org.apache.logging.log4j.Logger;
+import driver.DriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterMethod;
@@ -10,14 +10,14 @@ import utils.ConfigReader;
 import static utils.LogUtils.logger;
 
 public class BaseTest {
-    WebDriver driver;
+    protected WebDriver driver;
 
     @BeforeMethod
     public void setup() {
         logger.info("========== START TEST ==========");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-/*        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(300));*/
+        /*        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(300));*/
 /*Sau khi tạo xong ConfigReader thì thay đổi cách lấy URL như sau:
         driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");*/
         driver.get(ConfigReader.getPropValue("url"));

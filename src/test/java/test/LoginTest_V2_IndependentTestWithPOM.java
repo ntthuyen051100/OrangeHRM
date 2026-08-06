@@ -1,12 +1,13 @@
 package test;
 
+import base.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.LoginPage;
 
 import java.util.Set;
 
-public class loginTestV2_IndependentTest extends BaseTest {
+public class LoginTest_V2_IndependentTestWithPOM extends BaseTest {
 
     @Test
     public void TC01_LoginFailWithBlankInfo (){
