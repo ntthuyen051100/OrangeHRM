@@ -1,8 +1,10 @@
-package test;
+package test.Stage3_EvidenceAndReport;
 
 import base.BaseTest_UsingDriverManager;
 import data.AdminPageData;
+import listeners.TestListener;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import pageobject.PageManager;
@@ -12,30 +14,21 @@ import java.util.List;
 
 import static utils.LogUtils.logger;
 /*Đã làm được trong class này:
-- Tạo PageManager ở src/test/java/pageobject để hết những method khởi tạo + new mới mọi Page hiện có vào
-- Refactor tại class PageTest: khai báo + new pageObject, gọi hàm của 1 page nào đó qua PageManager
-!!!Lúc này khi run test đã gần OK -> chuyển sang các phần lấy evidence để debug + report*/
+- Thêm Logger để in log dễ nhìn (Tạo file log4j2.xml trong src/main/resources -> Tạo class LogUtils từ class
+  có sẵn Logger của log4j -> ở class hay page muốn dùng thì ko khai báo, no new, dùng thẳng vì method là public static void)
+- Tạo 1 class src/test/java/listeners/TestListener.java implements ITestListener có sẵn của selenium. Khi dùng
+    C1: chỉ cần thêm annotation @Listener (tênClassListener.class) trước class (ví dụ là class hiện tại)
+    C2: dùng ở cấp độ Suite (ví dụ: testng-testlistener.xml)
+    Xóa chú thích @Listener khỏi class TC đi -> thêm tag listeners + class name muốn chạy vào tệp XML -> run file xml đó.
+!!!Cần thêm report -> V6*/
 
-public class AdminTest_V4_AddPageManager extends BaseTest_UsingDriverManager {
-/*B1: Khai báo PageManager (nơi chứa new tất cả các page) ngay ngoài rìa Class Test*/
+@Listeners(TestListener.class)
+public class AdminTest_V5_TestListenerWithLog4j extends BaseTest_UsingDriverManager {
     private final PageManager page = new PageManager();
 
     @Test(dataProvider = "usernameKeywords", dataProviderClass = AdminPageData.class)
-    public void TC02_UsernameSearchBox(String keyword, boolean expectedResult) throws InterruptedException {
-        // Tự tạo SoftAssert cục bộ trong hàm để an toàn luồng
+    public void TC01_UsernameSearchBox(String keyword, boolean expectedResult) throws InterruptedException {
         SoftAssert softAssert = new SoftAssert();
-
-/*B2: xóa phần khai báo + new trong @Test. Lúc này gọi qua 'page' thay vì 'new' thủ công từng Page
-        AdminPage adminPage = new AdminPage(DriverManager.getDriver());
-        CommonPage commonPage = new CommonPage(DriverManager.getDriver());
-        LoginPage loginPage = new LoginPage(DriverManager.getDriver());*/
-/*B3: Đổi cách gọi hàm ở từng pageObject bằng cách thay biến page đó với method của PageManager với tên màn hình tương ứng
-        loginPage.login(ConfigReader.getPropValue("username"), ConfigReader.getPropValue("password"));
-        -> page.loginPage().login(...)
-        commonPage.clickAdmin();
-        -> page.commonPage().clickAdmin();
-        adminPage.searchUsername(keyword);
-        -> page.adminPage().searchUsername(keyword);*/
 
         page.loginPage().login(ConfigReader.getPropValue("username"), ConfigReader.getPropValue("password"));
         page.commonPage().clickAdmin();
@@ -55,7 +48,7 @@ public class AdminTest_V4_AddPageManager extends BaseTest_UsingDriverManager {
     }
 
     @Test(dataProvider = "userRoleDataV2", dataProviderClass = AdminPageData.class)
-    public void TC03_UserRole(String role, boolean expectedResult) {
+    public void TC02_UserRole(String role, boolean expectedResult) {
         SoftAssert softAssert = new SoftAssert();
 
         page.loginPage().login(ConfigReader.getPropValue("username"), ConfigReader.getPropValue("password"));
@@ -63,13 +56,9 @@ public class AdminTest_V4_AddPageManager extends BaseTest_UsingDriverManager {
         logger.info("Bắt đầu test với role = " + role);
         page.adminPage().clickUserRole();
         boolean actualResult = page.adminPage().isUserRoleDisplayed(role);
-        // Assert kết quả sau mỗi lượt chạy
         Assert.assertEquals(actualResult, expectedResult);
-        //Check xem trong kết quả có trùng với keyword
         if (actualResult) {
             page.adminPage().selectUserRole(role);
-            //Lấy list name của kết quả để khi in ra log sẽ hiện những username có role tương ứng. Còn roles
-            //thì vẫn phải chạy for để xác nhận xem khớp vs điều kiện tìm kiếm chưa
             List<String> names = page.adminPage().getNameSearchResult();
             List<String> roles = page.adminPage().getRoleSearchResult();
             int quan = 0;
@@ -84,25 +73,21 @@ public class AdminTest_V4_AddPageManager extends BaseTest_UsingDriverManager {
     }
 
     @Test(dataProvider = "employeeNameValidKeywordsV2", dataProviderClass = AdminPageData.class)
-    public void TC04_EmployeeName_valid(String keyword) {
+    public void TC03_EmployeeName_valid(String keyword) {
         SoftAssert softAssert = new SoftAssert();
 
         page.loginPage().login(ConfigReader.getPropValue("username"), ConfigReader.getPropValue("password"));
         page.commonPage().clickAdmin();
         page.adminPage().typeName(keyword);
         if (page.adminPage().hasSearchResult()) {
-            //Check xem trong list gợi ý có trùng với keyword
             List<String> suggestNames = page.adminPage().getSearchNames();
             for (String name : suggestNames) {
                 softAssert.assertTrue((name.toLowerCase()).contains(keyword.toLowerCase()), "Suggest name doesn't contain keyword");
             }
             logger.info("(DropDown) Số kết quả tìm kiếm đề xuất là cụ thể cho keyword " + keyword + " là \n" + suggestNames);
             softAssert.assertAll();
-            //Lấy text của lựa chọn 1, sau đó Select lựa chọn đầu tiên
             String selectedName = page.adminPage().getOptFirstName();
             page.adminPage().selectFirstName();
-            //Nếu xuất hiện message thông báo ko có user tồn tại thì in ra thẳng luôn "ko có kết quả".
-            // Nếu ko có msg thì tiến hành compare từ khóa với kết quar trong table
             boolean isRecordDisplayed = page.adminPage().isMsgNoRecordsFoundDisplayed(selectedName);
             if (!isRecordDisplayed) {
                 //Check xem trong table result

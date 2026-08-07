@@ -1,4 +1,4 @@
-package test;
+package test.Stage2_AdminTest_DataProvider_ThreadLocal_PageManager;
 
 import base.BaseTest;
 import data.AdminPageData;

@@ -1,4 +1,4 @@
-package test;
+package test.Stage1_Basic;
 
 import base.BaseTest;
 import org.testng.Assert;
@@ -73,13 +73,3 @@ public class LoginTest_V3_OneTestcase extends BaseTest {
         System.out.println("Navigate to the correct site");
     }
 }
-
-/*    @Test
-    public void TC07_LoginSuccessful_basedOnTitle(){
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login("Admin","admin123");
-
-        Assert.assertEquals(loginPage.dashboardTitle(),"Dashboard","Trang web chưa chuyển hướng đến đúng URL mong muốn.");
-        System.out.println("Navigate to the correct site");
-    }
-}*/

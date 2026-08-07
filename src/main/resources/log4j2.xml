@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="DEBUG">
     <Appenders>
+        <!-- Cấu hình in log ra Console của IntelliJ -->
         <Console name="LogToConsole" target="SYSTEM_OUT">
+            <!-- [%t] chính là chìa khóa để IntelliJ tách log theo từng luồng DataProvider -->
             <PatternLayout pattern="[%-5level] %d{dd-MM-yyyy HH:mm:ss} [%t] %c{1} - %msg%n"/>
         </Console>
     </Appenders>
@@ -15,3 +17,28 @@
         </Root>
     </Loggers>
 </Configuration>
+
+    <!--</Configuration>
+
+            <?xml version="1.0" encoding="UTF-8"?>
+    <Configuration status="WARN">
+    <Appenders>
+        &lt;!&ndash; Cấu hình in log ra Console của IntelliJ &ndash;&gt;
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            &lt;!&ndash; [%t] chính là chìa khóa để IntelliJ tách log theo từng luồng DataProvider &ndash;&gt;
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        &lt;!&ndash; Cấu hình tự động lưu log ra file bên trong thư mục target &ndash;&gt;
+        <File name="FileAppender" fileName="target/logs/automation.log" append="false">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
+        </Root>
+    </Loggers>
+    </Configuration>-->

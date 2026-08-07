@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Test Listener">
+<!--   B1: Khai báo thêm tag listener nữa-->
+    <listeners>
+        <listener class-name="listeners.AllureListener"></listener>
+    </listeners>
+
+    <test name="Test Listener Test">
+        <classes>
+<!--        B2: tại tag class thêm đường dẫn reference tới class muốn dùng listener.
+            Chỉ khi run trên file xml này mới có log ứng với từng trạng thái pass/fail/skip của method.-->
+            <class name="test.Stage3_EvidenceAndReport.AdminTest_V6_AllureReport" >
+            </class>
+        </classes>
+    </test>
+</suite>

@@ -1,4 +1,4 @@
-package test;
+package test.Stage1_Basic;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -17,9 +17,6 @@ import java.util.Set;
 
 public class LoginTest_V1_NoPOM {
     WebDriver driver;
-    //để sau xem lại
-    // private static final Logger logger = (Logger) LogManager.getLogger(LoginTest.class);
-
 
     By txtTitle = By.xpath("//h5[normalize-space()='Login']");
     By txtUsername = By.xpath ("/html[1]/body[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]/form[1]/div[1]/div[1]/div[2]/input[1]");
@@ -72,7 +69,7 @@ public class LoginTest_V1_NoPOM {
         driver.findElement(txtPassword).sendKeys("123");
         driver.findElement(btnLogin).click();
 
-      wait.until(ExpectedConditions.visibilityOf(driver.findElement(alertInvalidInfo)));
+/*      wait.until(ExpectedConditions.visibilityOf(driver.findElement(alertInvalidInfo)));*/
 //        Không nên dùng lệnh visibilityOf(WebElement element) vì lệnh này Nhận vào WebElement
 //        nên Element phải tồn tại trước mới dùng. Nên dùng lệnh visibilityOfElementLocated(By locator)
 //        vì Nhận vào By, Selenium sẽ tự đi tìm element

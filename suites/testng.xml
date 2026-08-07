@@ -1,19 +1,19 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Regression" parallel = "methods" thread-count="2">
+<suite name="Regression">
     <test name="Regression Test">
         <classes>
 <!--            <class name="test.AdminTest"/>-->
 <!--chữ test ở đầu .AdminTest là gì? là package chứa class AdminTest
 Trong <classes> sẽ điền list các class mà ta muốn run test. Name là [packageName].[className]. Ví dụ: firstpackage.FirstClass-->
-            <class name="test.AdminTest_V3_DataProviderParallelWithThreadLocal" >
+            <class name="test.Stage2_AdminTest_DataProvider_ThreadLocal_PageManager.AdminTest_V3_DataProviderParallelWithThreadLocal" >
 <!-- Nếu muốn chỉ định cụ thể Method muốn được run thì phải sử dụng <include>
               <methods>
                      <include name="TC03_CheckSystemUsers_UserRole" />
                     <include name="TC02_CheckSystemUsers_UsernameSearchBox" />
                 </methods>-->
             </class>
-           <!-- <class name="test.LoginTest_V3_OneTestcase"/>-->
+           <!-- <class name="test."/>-->
         </classes>
     </test>
 </suite>

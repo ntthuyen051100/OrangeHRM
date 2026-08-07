@@ -1,4 +1,4 @@
-package test;
+package test.Stage1_Basic;
 
 import base.BaseTest;
 import org.testng.Assert;
@@ -14,26 +14,12 @@ import java.util.Set;
 public class SideMenuTest extends BaseTest {
     SideMenu sideMenu;
     SoftAssert softAssert;
-/* Lý do tại sao phải khai báo đây, vì ở method LoginSuccess trong class @BeforeMethod CỦA CommonPage
-    thì commonPage được new mới là biến cục bộ, chỉ tồn tại trong method LoginSuccess. Khi thực hiện xong
-    thì biến đó tự biến mất. Muốn để dùng như biến toàn cục thì phải khai baáo 1 biến ngoài ko gán giá tri
-    tiến hanh gán giá trị trong method đó rồi những @Test khác đều có the reuse lại được*/
-
-/*  @BeforeClass
-    Không dùng beforeClass đây vì class se thực hiện trước method dù là method của class cha đi chăng nữa
-Lúc này, vì không có giá trị đc gán cho biến driver (vì việc gán gtri cho biến driver nằm ở beforeMethod của BaseTest)
-cho class nên sẽ bị null. Lúc này thay bằng @BeforeMethod vẫn OK, ko sợ xung đột giữa cha con vì lúc này cha vẫn
-chay trước con*/
 
     @BeforeMethod
     public void LoginSuccess() {
         softAssert = new SoftAssert();
         sideMenu = new SideMenu(driver);
         LoginPage loginPage = new LoginPage(driver);
-/* Ở đây chỉ có loginPage khi new phải khai báo class gốc vì loginPage đây new với giá trị mới hoàn toàn, biến cục bộ,
-end method này là clear. Còn softAssert commonPage tuyệt đối ko đc khai báo class gốc lên đầu vì nếu vậy xem như new mới
-1 biến có giá trị mới khác với biến toàn cục khai báo ngoài method. Mục đích của mình để reuse lại cho những testcase dưới.
-Nên ở đây không khai class thì sẽ là biểu thức gán giá trị bth thôi -> OK */
         loginPage.login("Admin", "admin123");
         Assert.assertEquals(sideMenu.getTitle(),"Dashboard","Navigate to the wrong page");
         System.out.println("After login, navigate to Dashboard page");

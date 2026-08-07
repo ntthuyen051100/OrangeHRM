@@ -1,4 +1,4 @@
-package test;
+package test.Stage2_AdminTest_DataProvider_ThreadLocal_PageManager;
 
 import base.BaseTest;
 import org.testng.Assert;
@@ -18,7 +18,7 @@ import static utils.LogUtils.logger;
 - Tách Page và Test ra theo POM, từng test độc lập
 - Lấy dữ liệu từ file config.properties (tạo file config.properties -> Tạo class ConfigReader trong src/main/java/utils
 để đọc config -> mỗi lần dùng ko cần khai báo, ko cần new, chấm dùng thẳng là được vì là method public static)
-- Thêm Logger để in log dễ nhìn (Tạo 2 file log4j2.properties + log4j2.xml trong src/main/resources -> Tạo class LogUtils
+- Thêm Logger để in log dễ nhìn (Tạo file log4j2.xml trong src/main/resources -> Tạo class LogUtils
 từ class có sẵn Logger của log4j -> ở class hay page muốn dùng thì ko khai báo, no new, dùng thẳng vì method là public static void)
 !!!Tuy nhiên data vẫn phải hardcode trong từng test -> Thiết lập thêm DataProvider ở ver2*/
 
@@ -97,7 +97,7 @@ LoginSuccess(). Ngay khi hàm này chạy xong, biến adminPage đó sẽ lập
     }
 
     @Test
-    public void TC03_UserRole_Valid() throws InterruptedException {
+    public void TC03_UserRole_Valid()  {
 //        adminPage.navigateUserScreen();
         adminPage.clickUserRoleAdmin();
         Assert.assertTrue(adminPage.isSearchResultDisplayed());
