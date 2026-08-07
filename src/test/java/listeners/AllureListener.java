@@ -1,12 +1,15 @@
 package listeners;
 
 import driver.DriverManager;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Attachment;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import org.testng.ITestContext;
+
+import java.io.ByteArrayInputStream;
 
 import static utils.LogUtils.logger;
 
@@ -26,7 +29,7 @@ public class AllureListener implements ITestListener {
     public String saveTextLog(String message) {
         return message;
     }
-/*    // 2.2 Định nghĩa hàm đính kèm log chữ (Stacktrace) nếu muốn xem chi tiết lỗi ngay trên ảnh
+/* // 2.2 Định nghĩa hàm đính kèm log chữ (Stacktrace) nếu muốn xem chi tiết lỗi ngay trên ảnh
     @Attachment(value = "Chi tiết lỗi hệ thống", type = "text/plain")
     public String saveTextLog(String message) {
         return message;
@@ -46,6 +49,9 @@ public class AllureListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
         logger.info("=== TEST CASE: " + result.getName() + " -> FAILED ===");
+
+/*Có 2 cách để đính kèm ảnh/ log vào report allure trên html:
+* C1: Viết 2 method @Attachment phía trên, ở event onTestFailure dùng hàm đã viết ghép vào cho đúng logic là được*/
         try {
             // Kiểm tra xem trình duyệt của luồng hiện tại có thực sự đang mở không (Tránh lỗi Null)
             if (DriverManager.getDriver() != null) {
@@ -59,6 +65,34 @@ public class AllureListener implements ITestListener {
             saveTextLog(result.getThrowable().getMessage());
         }
     }
+/*  C2: chạy bằng hàm Allure.addAttachment() chạy trực tiếp bằng code thuần. Khi pick chạy bằng hàm Allure.addAttachment()
+thì sẽ không dùng method có @Attachment phía trên (ẩn đi).
+       try {
+            // Kiểm tra Driver còn sống
+            if (DriverManager.getDriver() != null) {
+                logger.info(">>> Đang tiến hành chụp ảnh màn hình từ Listener...");
+
+                // 1. Chụp ảnh lấy mảng byte trực tiếp từ Selenium
+                byte[] screenshotBytes = ((TakesScreenshot) DriverManager.getDriver()).getScreenshotAs(OutputType.BYTES);
+
+                // 2. Ép Allure ghi file ảnh này xuống đĩa cứng ngay lập tức không qua trung gian
+                Allure.addAttachment("Page screenshot on failure", "image/png", new ByteArrayInputStream(screenshotBytes), ".png");
+
+                logger.info(">>> ĐÃ ĐẨY XONG ẢNH VÀO THƯ MỤC ALLURE-RESULTS! <<<");
+            } else {
+                logger.info(">>> KHÔNG THỂ CHỤP ẢNH: DriverManager.getDriver() đang bị NULL");
+            }
+        } catch (Exception e) {
+            logger.info(">>> LỖI PHÁT SINH KHI CHỤP ẢNH: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        // Đính kèm Log text lỗi vào Allure
+        if (result.getThrowable() != null) {
+            Allure.addAttachment("Error Log", "text/plain", result.getThrowable().getMessage(), ".txt");
+        }
+    }*/
+
 
     @Override
     public void onTestSkipped(ITestResult result) {

@@ -27,6 +27,21 @@ testlistener (src/test/java/listeners/AllureListener.java) thêm @Attachment c�
 !!!Bị lỗi chưa có screenshot khi bị fail, không có step rõ ràng, vẫn phải xóa allure-results thủ công???
 -> V7?*/
 
+/*Bổ sung cách xóa allure-results bằng maven:
+- Chỉnh lại các plugin của aspectjweaver trong pom.xml thay vì data dynamic thì set hardcode cho bằng luôn version của aspectjweaver
+- Để giải quyết vấn đề ko cần xóa thủ công ntn? Cấu hình lại cho file allure-results sẽ được thêm tự động vào package
+target -> Chạy mvn clean test trước khi run test để xóa luôn package target luôn => OK
+    B1: Thêm 1 file cấu hình src/test/resources/allure.properties với nội dung chỉ định nơi đặt allure results như trên
+    B2: Run test, lúc này allure-results ko xuất hiện ngang hàng với src nữa mà ở trong package target mới đc tạo sau khi run test
+    B3: Tại Terminal chạy lệnh "allure serve target/allure-results" thay cho "allure serve allure-results" vì lúc này mình phải vào target mới lấy được allure-results
+- Cách xóa file target sinh ra khi run test vừa rồi nhanh, đơn giản
+    B1: mở maven bên phía góc phải màn hình
+    B2: chọn Lifecycle -> clean
+=> lúc này ở console log sẽ báo xóa thành công package target
+
+!!!Bị lỗi chưa có screenshot khi bị fail, không có step rõ ràng???
+-> ?????*/
+
 /*@Listeners(AllureListener.class)*/
 public class AdminTest_V6_AllureReport extends BaseTest {
     AdminPage adminPage;

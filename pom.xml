@@ -62,36 +62,50 @@
         </dependency>
     </dependencies>
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.2.5</version>
-                    <configuration>
-                        <argLine>
-                            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                        </argLine>
-                    </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.aspectj</groupId>
-                            <artifactId>aspectjweaver</artifactId>
-                            <version>${aspectj.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.7.0</version>
-                    <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                        <encoding>UTF-8</encoding>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <!-- 1. Cấu hình Trình biên dịch hỗ trợ phiên bản Java hiện tại -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version> <!-- Cập nhật bản mới hỗ trợ Java cao -->
+                <configuration>
+                    <source>21</source> <!-- Đổi thành 21 khớp với máy của bạn -->
+                    <target>21</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- 2. Cấu hình Surefire Plugin kích hoạt AspectJ Weaver chạy ngầm -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.9.25.1/aspectjweaver-1.9.25.1.jar"
+                    </argLine>
+                    <systemPropertyVariables>
+                        <!-- Thêm dòng này để ép cả trình chụp ảnh và trình lưu log ghi chung vào một chỗ -->
+                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>1.9.25.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!--                <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-compiler-plugin</artifactId>
+                                <version>3.7.0</version>
+                                <configuration>
+                                    <source>1.8</source>
+                                    <target>1.8</target>
+                                    <encoding>UTF-8</encoding>
+                                </configuration>
+                            </plugin>-->
+        </plugins>
     </build>
 </project>
