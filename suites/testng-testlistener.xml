@@ -10,7 +10,7 @@
         <classes>
 <!--        B2: tại tag class thêm đường dẫn reference tới class muốn dùng listener.
             Chỉ khi run trên file xml này mới có log ứng với từng trạng thái pass/fail/skip của method.-->
-            <class name="test.Stage2_AdminTest_DataProvider_ThreadLocal_PageManager.AdminTest_V1_RunSequentialWithHardcodedData" >
+            <class name="test.Stage2_DataProvider_ThreadLocal_PageManager.AdminTest_V1_RunSequentialWithHardcodedData" >
             </class>
         </classes>
     </test>

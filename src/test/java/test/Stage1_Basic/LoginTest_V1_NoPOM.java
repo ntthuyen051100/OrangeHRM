@@ -69,10 +69,10 @@ public class LoginTest_V1_NoPOM {
         driver.findElement(txtPassword).sendKeys("123");
         driver.findElement(btnLogin).click();
 
-/*      wait.until(ExpectedConditions.visibilityOf(driver.findElement(alertInvalidInfo)));*/
-//        Không nên dùng lệnh visibilityOf(WebElement element) vì lệnh này Nhận vào WebElement
-//        nên Element phải tồn tại trước mới dùng. Nên dùng lệnh visibilityOfElementLocated(By locator)
-//        vì Nhận vào By, Selenium sẽ tự đi tìm element
+/*      wait.until(ExpectedConditions.visibilityOf(driver.findElement(alertInvalidInfo)));
+Không nên dùng lệnh visibilityOf(WebElement element) vì lệnh này Nhận vào WebElement nên Element phải
+tồn tại trước mới dùng. Nên dùng lệnh visibilityOfElementLocated(By locator) vì Nhận vào By,
+Selenium sẽ tự đi tìm element*/
         wait.until(ExpectedConditions.visibilityOfElementLocated(alertInvalidInfo));
         String alert_expected = driver.findElement(alertInvalidInfo).getText();
 

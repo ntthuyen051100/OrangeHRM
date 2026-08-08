@@ -3,7 +3,7 @@
 <suite name="Parallel" parallel = "methods" thread-count="2">
     <test name="Parallel Test">
         <classes>
-            <class name="test.Stage2_AdminTest_DataProvider_ThreadLocal_PageManager.AdminTest_V3_DataProviderParallelWithThreadLocal" >
+            <class name="test.Stage2_DataProvider_ThreadLocal_PageManager.AdminTest_V4_AddPageManager" >
             </class>
         </classes>
     </test>

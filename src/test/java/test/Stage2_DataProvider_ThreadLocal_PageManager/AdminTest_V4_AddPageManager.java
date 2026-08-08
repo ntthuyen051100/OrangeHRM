@@ -1,4 +1,4 @@
-package test.Stage2_AdminTest_DataProvider_ThreadLocal_PageManager;
+package test.Stage2_DataProvider_ThreadLocal_PageManager;
 
 import base.BaseTest_UsingDriverManager;
 import data.AdminPageData;
@@ -14,7 +14,7 @@ import static utils.LogUtils.logger;
 /*Đã làm được trong class này:
 - Tạo PageManager ở src/test/java/pageobject để hết những method khởi tạo + new mới mọi Page hiện có vào
 - Refactor tại class PageTest: khai báo + new pageObject, gọi hàm của 1 page nào đó qua PageManager
-!!!Lúc này khi run test đã gần OK -> thêm report*/
+!!!Lúc này khi run test đã gần OK -> thêm report + nếu chạy parallel trên nhiều trình duyệt như thế nào*/
 
 public class AdminTest_V4_AddPageManager extends BaseTest_UsingDriverManager {
 /*B1: Khai báo PageManager (nơi chứa new tất cả các page) ngay ngoài rìa Class Test*/

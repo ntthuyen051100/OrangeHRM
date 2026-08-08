@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<!-- parallel="tests" và thread-count="3" cho phép chạy 3 test block cùng lúc -->
+<suite name="MultiBrowserTestSuite" parallel="tests" thread-count="3">
+
+    <!-- Chạy trên Chrome -->
+    <test name="ChromeTest">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="test.Stage2_DataProvider_ThreadLocal_PageManager.AdminTest_V5_DriverFactoryForMultiBrowser"/>
+        </classes>
+    </test>
+
+    <!-- Chạy trên Firefox -->
+    <test name="FirefoxTest">
+        <parameter name="browser" value="firefox"/>
+        <classes>
+            <class name="test.Stage2_DataProvider_ThreadLocal_PageManager.AdminTest_V5_DriverFactoryForMultiBrowser"/>
+        </classes>
+    </test>
+
+    <!-- Chạy trên Edge -->
+    <test name="EdgeTest">
+        <parameter name="browser" value="edge"/>
+        <classes>
+            <class name="test.Stage2_DataProvider_ThreadLocal_PageManager.AdminTest_V5_DriverFactoryForMultiBrowser"/>
+        </classes>
+    </test>
+
+</suite>

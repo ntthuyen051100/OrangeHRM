@@ -1,8 +1,8 @@
-package test.Stage2_AdminTest_DataProvider_ThreadLocal_PageManager;
+package test.Stage2_DataProvider_ThreadLocal_PageManager;
 
 import base.BaseTest_UsingDriverManager;
 import data.AdminPageData;
-import driver.DriverManager;
+import drivers.DriverManager;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -23,7 +23,7 @@ tiếp theo tạo 1 class BaseTest (để cho từng web driver vào threadLoaca
 - Tại file testng.xml để thêm parallel = "methods" thread-count="2" trong div suite name -> khi run file testng-parallel thì sẽ 2 methods cùng 1 lần
 !!!Tuy nhiên phải lặp lại việc new mới từng page object trong mỗi method @test -> V4: PageManager */
 
-public class AdminTest_V3_DataProviderParallelWithThreadLocal extends BaseTest_UsingDriverManager {
+public class AdminTest_V3_DataProviderParallelWithThreadLocalDriverManager extends BaseTest_UsingDriverManager {
 /* !!!CHÚ Ý: khi set chạy parallel thì phải tiến hành khai báo + new mới page object trong từng method @test
 thì mới đảm bảo được tính độc lập dữ liệu trong từng thread.
 -> như dưới đây là ko được
