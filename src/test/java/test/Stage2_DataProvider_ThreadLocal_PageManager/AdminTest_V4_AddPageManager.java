@@ -17,7 +17,7 @@ import static utils.LogUtils.logger;
 !!!Lúc này khi run test đã gần OK -> thêm report + nếu chạy parallel trên nhiều trình duyệt như thế nào*/
 
 public class AdminTest_V4_AddPageManager extends BaseTest_UsingDriverManager {
-/*B1: Khai báo PageManager (nơi chứa new tất cả các page) ngay ngoài rìa Class Test*/
+/*B1: Khai báo PageManager_DriverManagerAndDriverFactory (nơi chứa new tất cả các page) ngay ngoài rìa Class Test*/
     private final PageManager page = new PageManager();
 
     @Test(dataProvider = "usernameKeywords", dataProviderClass = AdminPageData.class)

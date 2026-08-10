@@ -14,9 +14,14 @@ import java.util.List;
 
 import static utils.LogUtils.logger;
 /*Đã làm được trong class này:
-- Thêm Logger để in log dễ nhìn (Tạo file log4j2.xml trong src/main/resources -> Tạo class LogUtils từ class
-  có sẵn Logger của log4j -> ở class hay page muốn dùng thì ko khai báo, no new, dùng thẳng vì method là public static void)
-- Tạo 1 class src/test/java/listeners/TestListener.java implements ITestListener có sẵn của selenium. Khi dùng
+- Thêm Logger để in log dễ nhìn:
+    + Các bước setup: Thêm dependency log4j-api + log4j-core -> Tạo file log4j2.xml trong src/main/resources -> Tạo
+    class LogUtils từ class có sẵn Logger của log4j -> ở class hay page muốn dùng thì ko khai báo, no new, dùng thẳng vì
+    method là public static void)
+    + Các loại log và nên thêm vào class nào: TRACE, logger.debug (Class BasePage), logger.info (trong các page object,
+    class test), WARN, logger.error (Ở các hàm try catch, để ở vế catch để bắt exception)
+    + Cách để ẩn/ hiện log level tùy ý: sửa dòng <Root level="..."> trong log4j2.xml là được. Xem kỹ hơn tại log4j2.xml
+- Thêm class TestListener (src/test/java/listeners/TestListener.java) implements ITestListener có sẵn của selenium. Khi dùng
     C1: chỉ cần thêm annotation @Listener (tênClassListener.class) trước class (ví dụ là class hiện tại)
     C2: dùng ở cấp độ Suite (ví dụ: testng-testlistener.xml)
     Xóa chú thích @Listener khỏi class TC đi -> thêm tag listeners + class name muốn chạy vào tệp XML -> run file xml đó.

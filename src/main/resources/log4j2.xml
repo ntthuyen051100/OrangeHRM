@@ -12,6 +12,10 @@
         <Logger name="Log4j2" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
+<!--    Log4j phân chia thông tin theo các mức độ nghiêm trọng giảm dần như sau:
+        FATAL > ERROR > WARN > INFO > DEBUG > TRACE
+        Khi cấu hình hệ thống chạy ở một mức log nào đó, chỉ có mức đó và các mức cao hơn nó được in ra.-->
+        <!-- Chỉ in từ mức INFO trở lên, các log của DEBUG sẽ bị ẩn đi -->
         <Root level="info">
             <AppenderRef ref="LogToConsole"/>
         </Root>
