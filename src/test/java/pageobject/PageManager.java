@@ -28,27 +28,27 @@ DriverFactory.getDriver(). Vì @BeforeMethod đã chạy trước đó rồi, n�
 /*    Tùy vào mình muốn chạy parallel trên driver tiêu chuẩn là chrome thì dùng DriverManager,
 nếu muốn dùng browser khác thì dùng DriverFactory*/
     public LoginPage loginPage() {
-        return new LoginPage(DriverManager.getDriver());
-/*        return new LoginPage(DriverFactory.getDriver());*/
+/*        return new LoginPage(DriverManager.getDriver());*/
+        return new LoginPage(DriverFactory.getDriver());
     }
 
     public SideMenu commonPage() {
-        return new SideMenu(DriverManager.getDriver());
-/*        return new SideMenu(DriverFactory.getDriver());*/
+/*        return new SideMenu(DriverManager.getDriver());*/
+        return new SideMenu(DriverFactory.getDriver());
     }
 
     public AdminPage adminPage() {
-        return new AdminPage(DriverManager.getDriver());
-/*        return new AdminPage(DriverFactory.getDriver());*/
+/*        return new AdminPage(DriverManager.getDriver());*/
+        return new AdminPage(DriverFactory.getDriver());
     }
 
     public EditUserPage editUserPage() {
-        return new EditUserPage(DriverManager.getDriver());
-/*        return new EditUserPage(DriverFactory.getDriver());*/
+/*        return new EditUserPage(DriverManager.getDriver());*/
+        return new EditUserPage(DriverFactory.getDriver());
     }
     public JobPage jobPage () {
-        return new JobPage(DriverManager.getDriver());
-        /*        return new EditUserPage(DriverFactory.getDriver());*/
+/*        return new JobPage(DriverManager.getDriver());*/
+                return new JobPage(DriverFactory.getDriver());
     }
 
 /*Sau này có thêm Page mới (ví dụ DashboardPage), bạn chỉ việc thêm 1 dòng ở đây:
