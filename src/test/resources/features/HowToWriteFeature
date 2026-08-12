@@ -1,0 +1,94 @@
+//Feature là 1 chức năng, 1 user story
+Feature: Login to CRM
+  As a user, I want to be able to log into the CRM system
+  So that I can manage customer information
+
+//Background là pre-condition
+  Background:
+    Given a web browser is on the Google page
+
+//Senario same như từng testcase, từng @test, có đầy đủ description, pre-conditon của từng TC, test steps và expected result
+  @ValidLogin
+  Scenario: Successful login
+    Given Navigate to login page
+    When Enter username "Admin" and password "admin123"
+    And Click the Login button
+    Then I should be taken to the Dashboard page
+
+  @InvalidLogin
+  Scenario: Login fail
+    Given Navigate to login page
+    When Enter username "" and password "admin123"
+    And Click the Login button
+    Then I should be taken to the Dashboard page
+
+  @InvalidLoginMultiple
+  Scenario: Invalid Login with multiple account
+    Given Navigate to login page
+    When Enter invalid username and password
+    And Click the Login button
+    Then Navigate to the Dashboard page
+      | username          | password |
+      | user@example.com  | 123      |
+      | admin@example.com | 123456   |
+    Then An error message is displayed
+-------------------------------------------------------
+Có thể viết TC với nhiều data như sau (tương tự như DataProvider ở testNG) (để note lần sau thực hiện vì thấy hơi dài)
+-------------------------------------------------------
+Các file Feature sẽ có thể được đọc bởi bất bất cứ ai, thậm chí là những người không biết về ứng dụng mà chúng ta đang xây dựng.
+Mỗi chức năng sẽ nên có một file feature (.feature) riêng biệt. Chức năng gồm nhiều case test tương ứng nhiều Scenario
+Gherkin nên được viết theo cách khai báo (declaratively), không theo cách bắt buộc (not imperatively).
+Mỗi file Feature phải chứa tối thiểu 1 Scenario và không quá 10 Scenario
+Mỗi Scenario không nên có quá 10 Steps. Tránh dài dòng khó hiểu. Kẻo rơi vào chi tiết hoá dạng step của test case thuần
+Chữ cái đầu tiên của tiêu đề Scenario/Feature nên viết hoa, còn lại viết thường
+Tất cả các kịch bản (Scenarios) nên được viết theo nghĩa của người thứ ba, KHÔNG viết "I log in.../I visit..." (như đề cập ở ví dụ trên)
+
+🔆 Khai báo kịch bản (Scenario) và tiêu đề của kịch bản
+Tránh sử dụng các từ như: 'but', 'or', 'like', 'since', 'verify', 'assert', 'should' khi viết nội dung scenario.
+Tiêu đề của Scenario nên viết ngắn gọn, khái quát về các hành vi được kiểm thử
+Kịch bản cũng nên được viết ngắn gọn rõ ràng
+
+🔆 Viết Steps
+Các steps trong Given nên được viết ở thì quá khứ, ví dụ: Given An admin user **has** been created.
+Các steps trong When nên được viết ở thì hiện tại, ví dụ: When The admin **deletes** a user account.
+Các steps trong Then nên được viết ở thì hiện tại, ví dụ: Then The user **is** unable to login.
+
+🔆 Tags
+Tags nên được viết ở dạng chữ thường
+Các từ trong một Tags nên được ngăn cách nhau bởi dấu gạch ngang
+Tags nên ngắn gọn
+Ví dụ: @example-tag, @regression, @smoke
+
+🔆 Ví dụ Gherkin tốt
+[Bad]
+
+Feature: Subscribers see different articles based on their subscription level
+
+Scenario: Free subscribers see only the free articles
+  Given users with a free subscription can access "FreeArticle1" but not "PaidArticle1"
+  When I type "freeFrieda@example.com" in the email field
+  And I type "validPassword123" in the password field
+  And I press the "Submit" button
+  Then I see "FreeArticle1" on the home page
+  And I do not see "PaidArticle1" on the home page
+
+Scenario: Subscriber with a paid subscription can access "FreeArticle1" and "PaidArticle1"
+  Given I am on the login page
+  When I type "paidPattya@example.com" in the email field
+  And I type "validPassword123" in the password field
+  And I press the "Submit" button
+  Then I see "FreeArticle1" and "PaidArticle1" on the home page
+================================
+[Good]
+
+Feature: Subscribers see different articles based on their subscription level
+
+Scenario: Free subscribers see only the free articles
+  Given Free Frieda has a free subscription
+  When Free Frieda logs in with her valid credentials
+  Then she sees a Free article
+
+Scenario: Subscriber with a paid subscription can access both free and paid articles
+  Given Paid Patty has a basic-level paid subscription
+  When Paid Patty logs in with her valid credentials
+  Then she sees a Free article and a Paid article

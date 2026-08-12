@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="BDD Automation Test Suite">
+<!--<suite name="BDD Automation Test Suite" parallel="classes" thread-count="2">-->
+    <test name="Cucumber Tests">
+        <classes>
+            <!-- Chỉ gọi Runner class, Runner sẽ tự động tìm kiếm và thực thi các file .feature -->
+            <class name="runners.TestRunner"/>
+        </classes>
+    </test>
+</suite>
