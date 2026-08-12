@@ -6,4 +6,4 @@ Feature: Login to CRM
     Given Navigate to login page
     When Enter username "Admin" and password "admin123"
     And Click the Login button
-    Then I should be taken to the Dashboard page
+    Then Navigate to the Dashboard page

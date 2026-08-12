@@ -28,8 +28,8 @@ public class LoginStepdefs {
         loginPage.clickLogin();
     }
 
-    @Then("I should be taken to the Dashboard page")
-    public void iShouldBeTakenToTheDashboardPage() {
+    @Then("Navigate to the Dashboard page")
+    public void navigateToTheDashboardPage() {
         String actualUrl = Hooks.getDriver().getCurrentUrl();
         String expectedUrl = "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index";
         Assert.assertEquals(actualUrl, expectedUrl, "Trang web chưa chuyển hướng đến đúng URL mong muốn.");
