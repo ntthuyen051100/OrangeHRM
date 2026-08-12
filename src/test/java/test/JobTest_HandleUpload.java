@@ -1,6 +1,7 @@
 package test;
 
 import base.BaseTest;
+import net.datafaker.Faker;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
@@ -19,7 +20,10 @@ src/test/resources/UploadData tại máy local)
 - Chỉ định thứ tự chạy của các method @Test trong 1 class bằng 1 trong 3 cách dưới:
   + Thêm priority ở ngay @Test: ko ghi thì mặc định = 0, chạy trước tất cả
   + Thêm dependsOnMethods: @Test(dependsOnMethods = {"addJobTitle"})-> method này chỉ đc chạy khi method addJobTitle Pass
-  + Dùng testng.xml để sắp xếp thứ tự chạy */
+  + Dùng testng.xml để sắp xếp thứ tự chạy
+- Dùng dataFaker để gen data tự động: thêm dependency DataFaker vào pom.xml -> vào class Test muốn dùng tiến hành new mới
+ Faker faker = new Faker(); -> sau đó dùng dấu chấm để truy cập vào hàm mình muốn sử dụng là xong
+*/
 
 /*Đây là phiên bản chạy JobTest với thiết lập basic, chỉ chạy tuần tự nên sẽ ko extends BasePage dùng DriverManager hay
 DriverFactory. Chú ý khi dùng thì driver ở 2 class BaseTest và class PageManager phải fit nhau như sau
@@ -38,7 +42,7 @@ TUYỆT ĐỐI KHÔNG khai báo + new luôn trong mỗi @BeforeMethod vì khai b
     @BeforeMethod
     public void moveToJobTitlesPage(){
         SoftAssert softAssert = new SoftAssert();
-/*KHÔNG ĐƯỢC LÀM KIỂU NÀY: PageManager_RunSequential page = new PageManager_RunSequential(driver);*/
+        /*KHÔNG ĐƯỢC LÀM KIỂU NÀY: PageManager_RunSequential page = new PageManager_RunSequential(driver);*/
         page = new PageManager_RunSequential(driver);
         page.loginPage().login(ConfigReader.getPropValue("username"), ConfigReader.getPropValue("password"));
         page.commonPage().clickAdmin();
@@ -58,9 +62,12 @@ TUYỆT ĐỐI KHÔNG khai báo + new luôn trong mỗi @BeforeMethod vì khai b
         logger.info("Move to Add job title page");
 
         String jobTitle = "doctor";
+/*        String jobTitle = faker.job().title();*/
         page.jobPage().typeJobTitle(jobTitle);
 
-        String jobDescrip = "Doctors work in hospital.";
+/*        String jobDescrip = "Doctrs work in hospital.";*/
+        Faker faker = new Faker();
+        String jobDescrip = faker.strangerThings().quote();
         page.jobPage().typeDiscription(jobDescrip);
 
         File file = new File("src/test/resources/UploadData/authentication_userMockData.csv");
@@ -69,7 +76,8 @@ TUYỆT ĐỐI KHÔNG khai báo + new luôn trong mỗi @BeforeMethod vì khai b
         Assert.assertEquals(uploadedFileName,"authentication_userMockData.csv","Uploaded fail");
         logger.info("Uploaded successfully");
 
-        String note = "This is a note";
+        /*String note = "This is a note";*/
+        String note = faker.harryPotter().character();
         page.jobPage().typeNote(note);
 
         page.jobPage().clickBtnSave();
